@@ -1,0 +1,22 @@
+<svg width="96" height="96" viewBox="0 0 96 96" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="converge-bg" x1="18" y1="14" x2="78" y2="84" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#152E5C"/>
+      <stop offset="1" stop-color="#2E75FF"/>
+    </linearGradient>
+    <linearGradient id="converge-stroke" x1="24" y1="22" x2="72" y2="74" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FFFFFF"/>
+      <stop offset="1" stop-color="#E7F0FF"/>
+    </linearGradient>
+  </defs>
+  <rect x="8" y="8" width="80" height="80" rx="22" fill="url(#converge-bg)"/>
+  <g stroke="url(#converge-stroke)" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M30 63C23.5 57 20.6 47.5 23.1 38.7C26.1 27.7 35.3 19.8 46.1 18.4C55 17.2 63.7 20.3 69.7 26.6"/>
+    <path d="M66 33C72.5 39 75.4 48.5 72.9 57.3C69.9 68.3 60.7 76.2 49.9 77.6C41 78.8 32.3 75.7 26.3 69.4"/>
+    <path d="M43 37.9C45.3 35 48.7 33.2 52.4 33.2C59 33.2 64.3 38.5 64.3 45.1C64.3 48.9 62.5 52.3 59.6 54.6"/>
+    <path d="M53 58.1C50.7 61 47.3 62.8 43.6 62.8C37 62.8 31.7 57.5 31.7 50.9C31.7 47.1 33.5 43.7 36.4 41.4"/>
+  </g>
+  <circle cx="28.5" cy="64.5" r="5" fill="#FFFFFF"/>
+  <circle cx="67.5" cy="31.5" r="5" fill="#FFFFFF"/>
+  <circle cx="48" cy="48" r="6.4" stroke="url(#converge-stroke)" stroke-width="4"/>
+</svg>

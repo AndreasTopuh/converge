@@ -12,6 +12,11 @@ const manrope = Manrope({
 export const metadata: Metadata = {
   title: 'CONVERGE - Knowledge Capture Platform',
   description: 'Turn conversations into structured, queryable knowledge using AI.',
+  icons: {
+    icon: '/converge-mark.svg',
+    shortcut: '/converge-mark.svg',
+    apple: '/converge-mark.svg',
+  },
 };
 
 export default function RootLayout({

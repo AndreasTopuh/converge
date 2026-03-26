@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import MaterialIcon from '@/components/MaterialIcon';
+import BrandMark from '@/components/BrandMark';
 
 const navItems = [
   { href: '/dashboard', label: 'Dashboard', icon: 'space_dashboard' },
@@ -20,7 +21,7 @@ export default function Sidebar() {
       <aside className="sidebar desktop-sidebar">
         <div className="sidebar-logo">
           <div className="logo-mark">
-            <MaterialIcon icon="hub" className="logo-mark-icon" filled />
+            <BrandMark className="brand-mark-image" />
           </div>
           <div className="sidebar-brand">
             <p className="sidebar-eyebrow">Knowledge platform</p>

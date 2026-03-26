@@ -193,18 +193,10 @@ textarea::placeholder {
 .logo-mark {
   width: 48px;
   height: 48px;
-  border-radius: 16px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(160deg, #10233b, #1c5fd4);
-  color: #ffffff;
-  box-shadow: 0 16px 30px rgba(28, 95, 212, 0.2);
   flex-shrink: 0;
-}
-
-.logo-mark-icon {
-  font-size: 1.35rem;
 }
 
 .sidebar-brand {
@@ -398,17 +390,16 @@ textarea::placeholder {
 .landing-brand-mark {
   width: 48px;
   height: 48px;
-  border-radius: 16px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(160deg, #10233b, #1c5fd4);
-  color: #ffffff;
-  box-shadow: 0 16px 30px rgba(28, 95, 212, 0.18);
 }
 
-.landing-brand-icon {
-  font-size: 1.35rem;
+.brand-mark-image {
+  width: 48px;
+  height: 48px;
+  display: block;
+  filter: drop-shadow(0 16px 28px rgba(28, 95, 212, 0.22));
 }
 
 .landing-brand-copy {
@@ -739,6 +730,437 @@ textarea::placeholder {
   justify-content: space-between;
   align-items: flex-end;
   gap: 20px;
+}
+
+.landing-trust-strip {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 6px;
+}
+
+.landing-trust-label,
+.landing-mini-label {
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.landing-trust-list,
+.landing-signup-points {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.landing-trust-chip {
+  display: inline-flex;
+  align-items: center;
+  min-height: 40px;
+  padding: 0 14px;
+  border-radius: 999px;
+  background: rgba(248, 251, 255, 0.92);
+  border: 1px solid var(--border);
+  color: var(--text-secondary);
+  font-weight: 600;
+}
+
+.landing-stat-grid.compact {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.landing-preview-grid,
+.landing-quote-grid,
+.landing-pricing-grid,
+.landing-faq-list,
+.landing-surface-grid {
+  display: grid;
+  gap: 16px;
+}
+
+.landing-preview-grid,
+.landing-quote-grid,
+.landing-pricing-grid,
+.landing-faq-list {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.landing-surface-grid {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.landing-preview-card,
+.landing-quote-card,
+.landing-plan-card,
+.landing-faq-item,
+.landing-surface-card,
+.landing-signup-card {
+  border: 1px solid var(--border);
+  background: rgba(248, 251, 255, 0.92);
+  border-radius: 24px;
+}
+
+.landing-preview-card,
+.landing-quote-card,
+.landing-plan-card,
+.landing-faq-item,
+.landing-surface-card {
+  padding: 22px;
+}
+
+.landing-preview-card {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.landing-preview-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+.landing-preview-card h2,
+.landing-surface-card h3,
+.landing-plan-card h3 {
+  font-size: 1.16rem;
+  line-height: 1.4;
+  letter-spacing: -0.02em;
+}
+
+.landing-preview-card p,
+.landing-surface-card p,
+.landing-quote-text,
+.landing-plan-card p,
+.landing-signup-copy p,
+.landing-form-note {
+  color: var(--text-secondary);
+  line-height: 1.75;
+}
+
+.landing-mini-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 6px;
+}
+
+.landing-mini-icon {
+  color: var(--accent);
+}
+
+.landing-surface-card {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.landing-surface-card:hover,
+.landing-plan-card:hover,
+.landing-quote-card:hover,
+.landing-preview-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-md);
+  border-color: var(--border-strong);
+}
+
+.landing-surface-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.landing-surface-icon {
+  width: 48px;
+  height: 48px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 16px;
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+.landing-surface-arrow {
+  color: var(--text-muted);
+}
+
+.landing-surface-meta {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text-secondary);
+  font-size: 0.92rem;
+}
+
+.landing-quote-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.landing-quote-mark {
+  font-size: 3.4rem;
+  line-height: 0.8;
+  color: rgba(28, 95, 212, 0.26);
+}
+
+.landing-quote-author {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.landing-quote-author strong {
+  font-size: 0.98rem;
+}
+
+.landing-quote-author span {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+}
+
+.landing-plan-card {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.landing-faq-item {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.landing-faq-item h3 {
+  font-size: 1.08rem;
+  line-height: 1.45;
+  letter-spacing: -0.02em;
+}
+
+.landing-faq-item p {
+  color: var(--text-secondary);
+  line-height: 1.75;
+}
+
+.landing-plan-card.featured {
+  background:
+    radial-gradient(circle at top right, rgba(28, 95, 212, 0.12), transparent 38%),
+    rgba(248, 251, 255, 0.96);
+  border-color: rgba(28, 95, 212, 0.16);
+}
+
+.landing-plan-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 14px;
+}
+
+.landing-plan-badge {
+  display: inline-flex;
+  align-items: center;
+  min-height: 34px;
+  padding: 0 12px;
+  border-radius: 999px;
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.landing-plan-price {
+  font-size: 2rem;
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  line-height: 1;
+}
+
+.landing-plan-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.landing-plan-item,
+.landing-signup-point {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.landing-plan-item-icon,
+.landing-signup-point-icon {
+  color: var(--success);
+  margin-top: 1px;
+}
+
+.landing-signup {
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-sm);
+  backdrop-filter: blur(18px);
+  border-radius: var(--radius-lg);
+  padding: 30px;
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+  gap: 22px;
+}
+
+.landing-signup-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.landing-signup-meta {
+  display: grid;
+  gap: 12px;
+}
+
+.landing-signup-meta-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 16px 18px;
+  border-radius: 20px;
+  border: 1px solid var(--border);
+  background: rgba(248, 251, 255, 0.92);
+}
+
+.landing-signup-meta-card div {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.landing-signup-meta-card strong {
+  font-size: 0.96rem;
+  letter-spacing: -0.02em;
+}
+
+.landing-signup-meta-card span {
+  color: var(--text-secondary);
+  line-height: 1.65;
+  font-size: 0.9rem;
+}
+
+.landing-signup-meta-icon {
+  color: var(--accent);
+  margin-top: 1px;
+}
+
+.landing-signup-copy h2 {
+  font-size: clamp(2rem, 4vw, 3rem);
+  line-height: 1.08;
+  letter-spacing: -0.04em;
+}
+
+.landing-signup-card {
+  padding: 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.landing-form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.landing-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.landing-field.full {
+  grid-column: 1 / -1;
+}
+
+.landing-field span {
+  font-size: 0.86rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+}
+
+.landing-field input,
+.landing-field select,
+.landing-field textarea {
+  width: 100%;
+  min-height: 52px;
+  padding: 0 16px;
+  border-radius: 16px;
+  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.88);
+  color: var(--text-primary);
+  outline: none;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.landing-field textarea {
+  min-height: 132px;
+  padding: 14px 16px;
+  resize: vertical;
+}
+
+.landing-field input:focus,
+.landing-field select:focus,
+.landing-field textarea:focus {
+  border-color: rgba(28, 95, 212, 0.24);
+  box-shadow: 0 0 0 4px rgba(28, 95, 212, 0.08);
+}
+
+.landing-field.checkbox {
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.landing-field.checkbox input {
+  width: 18px;
+  height: 18px;
+  min-height: 18px;
+  margin-top: 2px;
+  padding: 0;
+  border-radius: 6px;
+  accent-color: var(--accent);
+}
+
+.landing-field.checkbox span {
+  font-weight: 600;
+  line-height: 1.7;
+}
+
+.landing-submit {
+  width: fit-content;
+}
+
+.landing-form-note {
+  font-size: 0.9rem;
+}
+
+.landing-success-banner {
+  padding: 14px 16px;
+  border-radius: 16px;
+  background: rgba(15, 143, 114, 0.1);
+  color: var(--success);
+  border: 1px solid rgba(15, 143, 114, 0.16);
+  line-height: 1.65;
+  font-weight: 600;
 }
 
 .eyebrow {
@@ -1760,7 +2182,8 @@ textarea::placeholder {
 
 @media (max-width: 1220px) {
   .landing-hero,
-  .landing-proof {
+  .landing-proof,
+  .landing-signup {
     grid-template-columns: 1fr;
   }
 
@@ -1768,8 +2191,16 @@ textarea::placeholder {
   .landing-proof-grid,
   .landing-feature-grid,
   .landing-workflow,
-  .landing-decision-list {
+  .landing-decision-list,
+  .landing-surface-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .landing-preview-grid,
+  .landing-quote-grid,
+  .landing-pricing-grid,
+  .landing-faq-list {
+    grid-template-columns: 1fr;
   }
 
   .hero-panel,
@@ -1797,6 +2228,10 @@ textarea::placeholder {
     order: 3;
     width: 100%;
     justify-content: space-between;
+  }
+
+  .landing-form-grid {
+    grid-template-columns: 1fr;
   }
 
   .desktop-sidebar {
@@ -1860,7 +2295,8 @@ textarea::placeholder {
   .landing-hero,
   .landing-proof,
   .landing-section,
-  .landing-cta {
+  .landing-cta,
+  .landing-signup {
     padding: 22px;
   }
 
@@ -1873,7 +2309,12 @@ textarea::placeholder {
   .landing-proof-grid,
   .landing-feature-grid,
   .landing-workflow,
-  .landing-decision-list {
+  .landing-decision-list,
+  .landing-preview-grid,
+  .landing-quote-grid,
+  .landing-pricing-grid,
+  .landing-faq-list,
+  .landing-surface-grid {
     grid-template-columns: 1fr;
   }
 
@@ -1940,6 +2381,14 @@ textarea::placeholder {
   .landing-button,
   .landing-secondary-button {
     width: 100%;
+  }
+
+  .landing-submit {
+    width: 100%;
+  }
+
+  .landing-signup-card {
+    padding: 18px;
   }
 
   .landing-hero-copy h1 {

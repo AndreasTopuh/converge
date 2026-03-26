@@ -107,7 +107,7 @@ export const brainFeedItems: BrainFeedItem[] = [
     decision: 'Switched payment provider from Stripe to Billplz for Malaysian market',
     reasoning:
       'Billplz has better local bank integration, lower transaction fees for MYR payments at 1.5% versus 3.4%, and supports FPX direct debit which 73% of our Malaysian users prefer.',
-    people: ['Shafin', 'Rizal', 'Andreas'],
+    people: ['Shafin', 'Sherman', 'Andreas'],
     channel: '#payments',
     date: '2026-03-25',
     confidence: 'high',
@@ -118,7 +118,7 @@ export const brainFeedItems: BrainFeedItem[] = [
     decision: 'Adopted weekly sprint retrospectives over bi-weekly format',
     reasoning:
       'Team velocity dropped 30% in February. Analysis showed issues were compounding over two-week cycles. Weekly retros allow faster course correction and the team preferred shorter, more focused sessions.',
-    people: ['Rizal', 'Siti'],
+    people: ['Sherman', 'Celeste'],
     channel: '#engineering',
     date: '2026-03-24',
     confidence: 'high',
@@ -140,7 +140,7 @@ export const brainFeedItems: BrainFeedItem[] = [
     decision: 'Extended client onboarding from 3 days to 5 days',
     reasoning:
       'Customer churn data showed 40% of churned clients cited "did not understand the product" within the first month. Adding 2 extra onboarding days with hands-on workshops reduced confusion and improved activation rates.',
-    people: ['Aishah', 'Rizal'],
+    people: ['Aishah', 'Sherman'],
     channel: '#client-ops',
     date: '2026-03-22',
     confidence: 'high',
@@ -162,7 +162,7 @@ export const brainFeedItems: BrainFeedItem[] = [
     decision: 'Postponed mobile app development to Q3',
     reasoning:
       'Usage data shows 94% of interactions happen on desktop during work hours. Mobile adds complexity without proportional value right now. The team will revisit after hitting 100 paying customers.',
-    people: ['Rizal', 'Shafin', 'Siti'],
+    people: ['Sherman', 'Shafin', 'Celeste'],
     channel: '#product',
     date: '2026-03-20',
     confidence: 'medium',
@@ -173,7 +173,7 @@ export const brainFeedItems: BrainFeedItem[] = [
     decision: 'Standardized vendor evaluation criteria to 5 core metrics',
     reasoning:
       'Previous vendor evaluations used inconsistent criteria across teams. The new standard covers cost, integration effort, support quality, compliance, and scalability. This reduces evaluation time from 2 weeks to 3 days.',
-    people: ['Siti', 'Aishah'],
+    people: ['Celeste', 'Aishah'],
     channel: '#procurement',
     date: '2026-03-19',
     confidence: 'medium',
@@ -201,7 +201,7 @@ export const askResponses: Record<string, AskResult> = {
       {
         channel: '#payments',
         date: 'March 25, 2026',
-        people: ['Shafin', 'Rizal', 'Andreas'],
+        people: ['Shafin', 'Sherman', 'Andreas'],
         messagePreview:
           '"After comparing Stripe vs Billplz for 2 weeks, Billplz wins on every metric that matters for our Malaysian users..."',
       },
@@ -224,12 +224,12 @@ export const askResponses: Record<string, AskResult> = {
   },
   'Who made the decision about sprint retrospectives?': {
     answer:
-      'Rizal and Siti made the decision to switch from bi-weekly to weekly sprint retrospectives. The change was prompted by a 30% drop in team velocity during February 2026, and the team preferred shorter, more focused sessions for faster course correction.',
+      'Sherman and Celeste made the decision to switch from bi-weekly to weekly sprint retrospectives. The change was prompted by a 30% drop in team velocity during February 2026, and the team preferred shorter, more focused sessions for faster course correction.',
     sources: [
       {
         channel: '#engineering',
         date: 'March 24, 2026',
-        people: ['Rizal', 'Siti'],
+        people: ['Sherman', 'Celeste'],
         messagePreview:
           '"Team velocity dropped 30% in February. We need to switch to weekly retros because issues are compounding over two weeks..."',
       },
@@ -243,7 +243,7 @@ export const askResponses: Record<string, AskResult> = {
       {
         channel: '#client-ops',
         date: 'March 22, 2026',
-        people: ['Aishah', 'Rizal'],
+        people: ['Aishah', 'Sherman'],
         messagePreview:
           '"40% of churned clients said they did not understand the product. We need to add 2 more onboarding days with workshops..."',
       },
@@ -271,7 +271,7 @@ export const askResponses: Record<string, AskResult> = {
       {
         channel: '#product',
         date: 'March 20, 2026',
-        people: ['Rizal', 'Shafin', 'Siti'],
+        people: ['Sherman', 'Shafin', 'Celeste'],
         messagePreview:
           '"94% desktop usage during work hours. Mobile is a distraction right now, so let us revisit at 100 paying customers..."',
       },
@@ -296,7 +296,7 @@ export const autoDocs: AutoDoc[] = [
 This SOP outlines the process for evaluating payment providers for the Malaysian market, based on decisions captured from the #payments and #procurement channels.
 
 ## 2. Selection Criteria
-Based on team discussions (Shafin, Rizal, Andreas - March 2026):
+Based on team discussions (Shafin, Sherman, Andreas - March 2026):
 
 | Criteria | Weight | Notes |
 |----------|--------|-------|
@@ -326,7 +326,7 @@ Quarterly review - next evaluation: June 2026.`,
 - **Sprint planning:** Monday mornings
 
 ## 2. Retrospective Format
-Based on team agreement (Rizal, Siti - March 2026):
+Based on team agreement (Sherman, Celeste - March 2026):
 - Duration: 30 minutes (down from 60)
 - Format: Start / Stop / Continue
 - Action items limited to 3 per session
@@ -382,7 +382,7 @@ Bi-weekly retrospectives allowed issues to compound. Weekly format enables faste
     sourceCount: 6,
     status: 'draft',
     content: `## 1. Core Evaluation Metrics
-Standardized by Siti and Aishah (March 2026):
+Standardized by Celeste and Aishah (March 2026):
 
 1. **Cost** - Total cost of ownership over 12 months
 2. **Integration Effort** - Days to integrate with the existing stack
