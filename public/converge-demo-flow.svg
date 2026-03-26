@@ -1,0 +1,77 @@
+<svg width="1280" height="760" viewBox="0 0 1280 760" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="flow-bg" x1="120" y1="80" x2="1120" y2="680" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#0E2140"/>
+      <stop offset="1" stop-color="#1B4FAF"/>
+    </linearGradient>
+    <linearGradient id="flow-card" x1="180" y1="140" x2="1040" y2="640" gradientUnits="userSpaceOnUse">
+      <stop stop-color="rgba(255,255,255,0.18)"/>
+      <stop offset="1" stop-color="rgba(255,255,255,0.05)"/>
+    </linearGradient>
+    <linearGradient id="flow-line" x1="240" y1="300" x2="980" y2="300" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#90B8FF"/>
+      <stop offset="1" stop-color="#68E3C2"/>
+    </linearGradient>
+    <filter id="shadow" x="0" y="0" width="1280" height="760" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feDropShadow dx="0" dy="28" stdDeviation="32" flood-color="#06101F" flood-opacity="0.26"/>
+    </filter>
+  </defs>
+
+  <rect width="1280" height="760" rx="40" fill="url(#flow-bg)"/>
+  <g opacity="0.18">
+    <path d="M0 130H1280" stroke="white"/>
+    <path d="M0 260H1280" stroke="white"/>
+    <path d="M0 390H1280" stroke="white"/>
+    <path d="M0 520H1280" stroke="white"/>
+    <path d="M0 650H1280" stroke="white"/>
+    <path d="M180 0V760" stroke="white"/>
+    <path d="M420 0V760" stroke="white"/>
+    <path d="M660 0V760" stroke="white"/>
+    <path d="M900 0V760" stroke="white"/>
+    <path d="M1140 0V760" stroke="white"/>
+  </g>
+
+  <g filter="url(#shadow)">
+    <rect x="120" y="110" width="1040" height="540" rx="36" fill="url(#flow-card)" stroke="rgba(255,255,255,0.18)"/>
+
+    <rect x="170" y="168" width="258" height="430" rx="28" fill="rgba(255,255,255,0.12)" stroke="rgba(255,255,255,0.18)"/>
+    <text x="206" y="228" fill="#CFE0FF" font-family="Arial, sans-serif" font-size="24" font-weight="700">Slack ingest</text>
+    <text x="206" y="266" fill="#93A9CC" font-family="Arial, sans-serif" font-size="18">Threads, channel context, people</text>
+    <rect x="206" y="310" width="184" height="14" rx="7" fill="#4D78CB"/>
+    <rect x="206" y="350" width="152" height="14" rx="7" fill="#4D78CB"/>
+    <rect x="206" y="390" width="168" height="14" rx="7" fill="#4D78CB"/>
+    <rect x="206" y="458" width="186" height="84" rx="20" fill="rgba(255,255,255,0.1)"/>
+    <text x="230" y="495" fill="#FFFFFF" font-family="Arial, sans-serif" font-size="20" font-weight="700">#payments</text>
+    <text x="230" y="527" fill="#ADC2E1" font-family="Arial, sans-serif" font-size="16">Switched to Billplz</text>
+
+    <rect x="510" y="146" width="260" height="474" rx="30" fill="rgba(255,255,255,0.1)" stroke="rgba(255,255,255,0.18)"/>
+    <text x="546" y="212" fill="#CFE0FF" font-family="Arial, sans-serif" font-size="24" font-weight="700">Reasoning layer</text>
+    <text x="546" y="250" fill="#93A9CC" font-family="Arial, sans-serif" font-size="18">Claude + routing + retrieval</text>
+    <rect x="546" y="302" width="188" height="86" rx="22" fill="rgba(104,227,194,0.16)" stroke="rgba(104,227,194,0.28)"/>
+    <text x="574" y="338" fill="#68E3C2" font-family="Arial, sans-serif" font-size="18" font-weight="700">Decision extracted</text>
+    <text x="574" y="367" fill="#C8FFF0" font-family="Arial, sans-serif" font-size="16">Confidence: high</text>
+    <rect x="546" y="420" width="188" height="86" rx="22" fill="rgba(144,184,255,0.16)" stroke="rgba(144,184,255,0.3)"/>
+    <text x="574" y="456" fill="#90B8FF" font-family="Arial, sans-serif" font-size="18" font-weight="700">Source linked</text>
+    <text x="574" y="485" fill="#D7E7FF" font-family="Arial, sans-serif" font-size="16">People, date, channel</text>
+
+    <rect x="850" y="168" width="260" height="190" rx="28" fill="rgba(255,255,255,0.12)" stroke="rgba(255,255,255,0.18)"/>
+    <text x="886" y="226" fill="#CFE0FF" font-family="Arial, sans-serif" font-size="24" font-weight="700">Ask</text>
+    <text x="886" y="262" fill="#93A9CC" font-family="Arial, sans-serif" font-size="18">Grounded answer flow</text>
+    <rect x="886" y="298" width="176" height="12" rx="6" fill="#68E3C2"/>
+    <rect x="886" y="330" width="148" height="12" rx="6" fill="#68E3C2" opacity="0.8"/>
+
+    <rect x="850" y="408" width="260" height="190" rx="28" fill="rgba(255,255,255,0.12)" stroke="rgba(255,255,255,0.18)"/>
+    <text x="886" y="466" fill="#CFE0FF" font-family="Arial, sans-serif" font-size="24" font-weight="700">Auto Docs</text>
+    <text x="886" y="502" fill="#93A9CC" font-family="Arial, sans-serif" font-size="18">Playbooks and SOP output</text>
+    <rect x="886" y="538" width="176" height="12" rx="6" fill="#90B8FF"/>
+    <rect x="886" y="570" width="132" height="12" rx="6" fill="#90B8FF" opacity="0.8"/>
+  </g>
+
+  <path d="M428 383H510" stroke="url(#flow-line)" stroke-width="6" stroke-linecap="round"/>
+  <path d="M770 264H850" stroke="url(#flow-line)" stroke-width="6" stroke-linecap="round"/>
+  <path d="M770 502H850" stroke="url(#flow-line)" stroke-width="6" stroke-linecap="round"/>
+
+  <circle cx="470" cy="383" r="12" fill="#90B8FF"/>
+  <circle cx="810" cy="264" r="12" fill="#68E3C2"/>
+  <circle cx="810" cy="502" r="12" fill="#90B8FF"/>
+</svg>

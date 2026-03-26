@@ -1,6 +1,7 @@
 'use client';
 
 import { FormEvent, startTransition, useState } from 'react';
+import Image from 'next/image';
 import Link from 'next/link';
 import MaterialIcon from '@/components/MaterialIcon';
 import BrandMark from '@/components/BrandMark';
@@ -95,6 +96,13 @@ const heroHighlights = [
     description:
       'Start with live chat data and expand into a broader enterprise knowledge layer.',
   },
+];
+
+const demoLoopSteps = [
+  'Slack threads synced and filtered',
+  'Reasoning extracted with source context',
+  'Answer routed to Ask with citations',
+  'Auto Docs published from the same decisions',
 ];
 
 const pilotFeedback = [
@@ -194,6 +202,30 @@ export default function PublicHome() {
   const featuredDoc = autoDocs[0];
   const featuredDecision = brainFeedItems[0];
   const publishedDocs = autoDocs.filter((doc) => doc.status === 'published').length;
+  const heroFacts = [
+    { value: connectionStats.totalMessages.toLocaleString(), label: 'messages indexed' },
+    { value: connectionStats.decisionsCapture.toString(), label: 'decisions traced' },
+    { value: publishedDocs.toString(), label: 'published docs ready' },
+  ];
+  const previewHighlights = [
+    { label: 'Source-linked', value: 'People, channel, and date stay visible' },
+    { label: 'Reasoning layer', value: 'Claude + routing + retrieval orchestration' },
+    { label: 'Outputs', value: 'Ask answers and Auto Docs from the same decisions' },
+  ];
+  const footerBottomNotes = [
+    {
+      title: 'Presentation-ready',
+      text: 'Prepared for investor demos, pilot conversations, and formal presentations.',
+    },
+    {
+      title: 'Clean UX flow',
+      text: 'A fictional workspace only appears after entering the product experience.',
+    },
+    {
+      title: 'Immediate next step',
+      text: 'Visitors can request a demo or open the sample workspace directly.',
+    },
+  ];
 
   const [signupForm, setSignupForm] = useState({
     name: '',
@@ -248,6 +280,9 @@ export default function PublicHome() {
 
   return (
     <div className="landing-page">
+      <div className="landing-orb landing-orb-one" aria-hidden="true" />
+      <div className="landing-orb landing-orb-two" aria-hidden="true" />
+
       <header className="landing-header">
         <Link href="/" className="landing-brand">
           <span className="landing-brand-mark">
@@ -294,6 +329,15 @@ export default function PublicHome() {
             the sample workspace inside the product shows a realistic operating
             scenario across payments, onboarding, and AI decisions.
           </p>
+
+          <div className="landing-hero-facts">
+            {heroFacts.map((fact) => (
+              <div key={fact.label} className="landing-hero-fact">
+                <strong>{fact.value}</strong>
+                <span>{fact.label}</span>
+              </div>
+            ))}
+          </div>
 
           <div className="landing-hero-highlights">
             {heroHighlights.map((item) => (
@@ -391,6 +435,75 @@ export default function PublicHome() {
                   <MaterialIcon icon="attachment" className="meta-pill-icon" />
                   {featuredDoc.sourceCount} sources
                 </span>
+              </div>
+            </article>
+
+            <article className="landing-preview-card wide landing-preview-motion-card">
+              <div className="landing-preview-head">
+                <span className="landing-mini-label">Animated product preview</span>
+                <MaterialIcon icon="monitoring" className="landing-mini-icon" />
+              </div>
+
+              <div className="landing-preview-visual">
+                <div className="landing-preview-image-shell">
+                  <div className="landing-preview-image-stage">
+                    <Image
+                      src="/converge-demo-flow.svg"
+                      alt="Converge workflow illustration showing ingest, reasoning, answers, and docs"
+                      width={1280}
+                      height={760}
+                      className="landing-preview-image"
+                      priority
+                    />
+                  </div>
+
+                  <div className="landing-preview-image-meta">
+                    {previewHighlights.map((item) => (
+                      <div key={item.label} className="landing-preview-image-item">
+                        <span>{item.label}</span>
+                        <strong>{item.value}</strong>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="landing-preview-motion">
+                  <div className="landing-preview-motion-head">
+                    <strong>Preview loop</strong>
+                    <span className="landing-live-indicator">
+                      <span className="landing-live-dot" />
+                      Live
+                    </span>
+                  </div>
+
+                  <p className="landing-preview-motion-copy">
+                    A realistic product loop that shows how synced conversations
+                    become searchable answers and reusable documentation without
+                    losing traceability.
+                  </p>
+
+                  <div className="landing-preview-motion-list">
+                    {demoLoopSteps.map((step) => (
+                      <div key={step} className="landing-preview-motion-step">
+                        <MaterialIcon
+                          icon="check_circle"
+                          className="landing-preview-motion-icon"
+                        />
+                        <span>{step}</span>
+                      </div>
+                    ))}
+                  </div>
+
+                  <div className="landing-preview-motion-foot">
+                    <span className="landing-preview-foot-pill">Seeded workspace</span>
+                    <span className="landing-preview-foot-pill">Source citations</span>
+                    <span className="landing-preview-foot-pill">Demo-safe flow</span>
+                  </div>
+
+                  <div className="landing-preview-progress" aria-hidden="true">
+                    <span />
+                  </div>
+                </div>
               </div>
             </article>
           </div>
@@ -861,9 +974,13 @@ export default function PublicHome() {
           </div>
         </div>
 
-        <div className="landing-footer-bottom">
-          <span>Prepared for investor demos, pilot conversations, and formal presentations.</span>
-          <span>A fictional workspace is used only inside the product demo, not on the public homepage.</span>
+        <div className="landing-footer-bottom-grid">
+          {footerBottomNotes.map((item) => (
+            <div key={item.title} className="landing-footer-bottom-card">
+              <strong>{item.title}</strong>
+              <span>{item.text}</span>
+            </div>
+          ))}
         </div>
       </footer>
     </div>
