@@ -611,12 +611,10 @@ textarea::placeholder {
   position: absolute;
   inset: -40% auto -40% -18%;
   width: 160px;
-  background: linear-gradient(
-    180deg,
-    rgba(255, 255, 255, 0),
-    rgba(255, 255, 255, 0.22),
-    rgba(255, 255, 255, 0)
-  );
+  background: linear-gradient(180deg,
+      rgba(255, 255, 255, 0),
+      rgba(255, 255, 255, 0.22),
+      rgba(255, 255, 255, 0));
   transform: rotate(18deg);
   animation: light-sweep 9s ease-in-out infinite;
   pointer-events: none;
@@ -629,7 +627,7 @@ textarea::placeholder {
   gap: 14px;
 }
 
-.landing-showcase-head > div {
+.landing-showcase-head>div {
   display: flex;
   flex-direction: column;
   gap: 6px;
@@ -3059,7 +3057,7 @@ textarea::placeholder {
   padding-left: 20px;
 }
 
-.doc-content li + li {
+.doc-content li+li {
   margin-top: 8px;
 }
 
@@ -3109,6 +3107,7 @@ textarea::placeholder {
 }
 
 @keyframes pulse-dot {
+
   0%,
   100% {
     opacity: 0.4;
@@ -3134,6 +3133,7 @@ textarea::placeholder {
 }
 
 @keyframes orb-float {
+
   0%,
   100% {
     transform: translate3d(0, 0, 0) scale(1);
@@ -3145,6 +3145,7 @@ textarea::placeholder {
 }
 
 @keyframes float-mark {
+
   0%,
   100% {
     transform: translateY(0);
@@ -3156,6 +3157,7 @@ textarea::placeholder {
 }
 
 @keyframes chip-float {
+
   0%,
   100% {
     transform: translateY(0);
@@ -3167,6 +3169,7 @@ textarea::placeholder {
 }
 
 @keyframes light-sweep {
+
   0%,
   100% {
     transform: translateX(-120px) rotate(18deg);
@@ -3185,6 +3188,7 @@ textarea::placeholder {
 }
 
 @keyframes float-card {
+
   0%,
   100% {
     transform: translateY(0);
@@ -3210,6 +3214,7 @@ textarea::placeholder {
 }
 
 @keyframes step-glow {
+
   0%,
   100% {
     opacity: 0.5;
@@ -3245,7 +3250,28 @@ textarea::placeholder {
   }
 }
 
+@media (max-width: 1600px) {
+  .landing-hero {
+    grid-template-columns: 1fr;
+  }
+
+  .landing-showcase {
+    max-width: 980px;
+  }
+}
+
+@media (max-width: 1440px) {
+  .landing-page {
+    width: min(1320px, 100%);
+  }
+
+  .landing-preview-visual {
+    grid-template-columns: 1fr;
+  }
+}
+
 @media (max-width: 1220px) {
+
   .landing-band,
   .landing-hero,
   .landing-proof,
@@ -3376,6 +3402,7 @@ textarea::placeholder {
 }
 
 @media (max-width: 720px) {
+
   .landing-header,
   .landing-hero,
   .landing-band,
@@ -3562,6 +3589,7 @@ textarea::placeholder {
 }
 
 @media (prefers-reduced-motion: reduce) {
+
   *,
   *::before,
   *::after {
