@@ -4,13 +4,19 @@ import { FormEvent, startTransition, useState } from 'react';
 import Link from 'next/link';
 import MaterialIcon from '@/components/MaterialIcon';
 import BrandMark from '@/components/BrandMark';
-import { autoDocs, brainFeedItems, connectionStats } from '@/data/mockData';
+import {
+  autoDocs,
+  brainFeedItems,
+  connectionStats,
+  mvpStack,
+  productionDirection,
+} from '@/data/mockData';
 
 const trustGroups = [
-  'Operations teams',
-  'Founders',
+  'Founders and CEOs',
+  'Chiefs of staff',
   'Product leads',
-  'Customer success',
+  'Operations teams',
   'Internal AI teams',
 ];
 
@@ -41,32 +47,53 @@ const productSurfaces = [
     icon: 'search',
     title: 'Ask',
     description:
-      'Turn institutional knowledge into instant answers for product, operations, and leadership teams.',
-    meta: 'Grounded search across decisions and people',
+      'Run the sourced Q&A flow used in the live demo, with answers grounded in people, channels, and dates.',
+    meta: 'Grounded search across the sample workspace',
   },
   {
     href: '/brain-feed',
     icon: 'timeline',
     title: 'Brain Feed',
     description:
-      'Review extracted decisions, reasoning, and confidence in a stream built for fast executive readouts.',
-    meta: 'Decision feed with reasoning and ownership',
+      'Review extracted decisions, reasoning, and confidence from the sample workspace in one stream.',
+    meta: 'Decision feed for product, ops, and AI teams',
   },
   {
     href: '/auto-docs',
     icon: 'description',
     title: 'Auto Docs',
     description:
-      'Create SOPs and operational documents from the conversations that shaped the policy or process.',
-    meta: 'Structured docs from captured context',
+      'Open seeded SOPs and operational documents generated from the same captured decisions.',
+    meta: 'Business-ready docs from real workspace context',
   },
   {
     href: '/connections',
     icon: 'lan',
     title: 'Connections',
     description:
-      'Link Converge with Slack and future systems so knowledge capture happens where work already happens.',
-    meta: 'Live sync for chat-native teams',
+      'Show how the demo workspace is fed from Slack today, with a realistic path to broader enterprise integrations.',
+    meta: 'Slack live today, roadmap-ready connectors next',
+  },
+];
+
+const heroHighlights = [
+  {
+    icon: 'check_circle',
+    title: 'Sourced answers',
+    description:
+      'Every answer keeps the source conversation, people, and date visible.',
+  },
+  {
+    icon: 'description',
+    title: 'Shareable docs',
+    description:
+      'Turn recurring decisions into SOPs, onboarding guides, and review-ready documents.',
+  },
+  {
+    icon: 'lan',
+    title: 'Slack-first capture',
+    description:
+      'Start with live chat data and expand into a broader enterprise knowledge layer.',
   },
 ];
 
@@ -156,6 +183,11 @@ const faqItems = [
     answer:
       'Qualified teams get a short product walkthrough, pilot scoping, and onboarding guidance based on team size, decision volume, and evaluation goals.',
   },
+  {
+    question: 'What is live in the demo today?',
+    answer:
+      'The Ask experience and Auto Docs are presented as real working demo flows on seeded workspace data, while Brain Feed and Connections show the same company context in a clear presentation-ready interface.',
+  },
 ];
 
 export default function PublicHome() {
@@ -198,7 +230,7 @@ export default function PublicHome() {
 
         setSignupState('success');
         setSignupMessage(
-          `Thanks, ${firstName}. Your pilot request has been recorded. We will review your team details and follow up at ${signupForm.email} within two business days.`
+          `Thanks, ${firstName}. Your demo request has been recorded. We will review your team details and follow up at ${signupForm.email} within two business days.`
         );
         setSignupForm({
           name: '',
@@ -237,10 +269,10 @@ export default function PublicHome() {
 
         <div className="landing-actions">
           <Link href="/dashboard" className="landing-link">
-            Open workspace
+            Open sample workspace
           </Link>
           <a href="#signup" className="landing-button">
-            <span>Join early access</span>
+            <span>Request demo</span>
             <MaterialIcon icon="arrow_outward" className="landing-button-icon" />
           </a>
         </div>
@@ -253,26 +285,38 @@ export default function PublicHome() {
             Built for startup teams that move through chat
           </div>
 
-          <h1>
-            Converge turns everyday conversations into searchable company
-            knowledge.
-          </h1>
+          <h1>Turn chat into sourced answers and shareable company knowledge.</h1>
 
           <p>
-            Capture decisions, preserve reasoning, and generate operational
-            documentation from the tools your team already uses. Converge gives
-            founders, operators, and product teams a clear memory of what was
-            decided and why.
+            Converge captures decisions, preserves reasoning, and turns
+            day-to-day operating chat into a knowledge layer leadership can
+            actually review. The public homepage stays company-agnostic, while
+            the sample workspace inside the product shows a realistic operating
+            scenario across payments, onboarding, and AI decisions.
           </p>
+
+          <div className="landing-hero-highlights">
+            {heroHighlights.map((item) => (
+              <article key={item.title} className="landing-highlight">
+                <div className="landing-highlight-icon">
+                  <MaterialIcon icon={item.icon} className="landing-highlight-glyph" />
+                </div>
+                <div className="landing-highlight-copy">
+                  <strong>{item.title}</strong>
+                  <span>{item.description}</span>
+                </div>
+              </article>
+            ))}
+          </div>
 
           <div className="landing-hero-actions">
             <a href="#signup" className="landing-button">
-              <span>Request early access</span>
+              <span>Request demo access</span>
               <MaterialIcon icon="arrow_outward" className="landing-button-icon" />
             </a>
             <Link href="/dashboard" className="landing-secondary-button">
               <MaterialIcon icon="space_dashboard" className="landing-secondary-icon" />
-              <span>Explore the workspace</span>
+              <span>Open sample workspace</span>
             </Link>
           </div>
 
@@ -291,7 +335,11 @@ export default function PublicHome() {
         <aside className="landing-showcase">
           <div className="landing-showcase-card primary">
             <div className="landing-showcase-head">
-              <p className="panel-kicker">Live workspace snapshot</p>
+              <div>
+                <p className="panel-kicker">Live workspace snapshot</p>
+                <h2>Sample workspace</h2>
+                <p>A realistic operations, product, and AI scenario used inside the demo.</p>
+              </div>
               <MaterialIcon icon="monitoring" className="panel-heading-icon" />
             </div>
 
@@ -349,7 +397,28 @@ export default function PublicHome() {
         </aside>
       </section>
 
-      <section className="landing-proof">
+      <section className="landing-band">
+        <div className="landing-band-copy">
+          <p className="section-kicker">Built on a practical demo stack</p>
+          <h2>Clear public story first, realistic workspace context second.</h2>
+          <p>
+            The public landing page explains the product without exposing a
+            sample company too early. Company context only appears after the
+            user opens the workspace, which keeps the UX flow cleaner and more
+            intuitive.
+          </p>
+        </div>
+
+        <div className="landing-band-stack">
+          {mvpStack.slice(0, 7).map((item) => (
+            <span key={item} className="landing-band-chip">
+              {item}
+            </span>
+          ))}
+        </div>
+      </section>
+
+      <section className="landing-proof landing-proof-plain">
         <div className="landing-proof-copy">
           <p className="section-kicker">Why teams care</p>
           <h2>Important operational decisions should not vanish into chat history.</h2>
@@ -387,7 +456,7 @@ export default function PublicHome() {
         </div>
       </section>
 
-      <section id="features" className="landing-section">
+      <section id="features" className="landing-section landing-section-plain">
         <div className="section-heading">
           <div>
             <p className="section-kicker">Core capabilities</p>
@@ -395,14 +464,17 @@ export default function PublicHome() {
           </div>
         </div>
 
-        <div className="landing-feature-grid">
-          {useCases.map((item) => (
-            <article key={item.title} className="landing-feature-card">
+        <div className="landing-feature-list">
+          {useCases.map((item, index) => (
+            <article key={item.title} className="landing-feature-row">
+              <div className="landing-feature-row-index">{`0${index + 1}`}</div>
               <div className="landing-feature-icon">
                 <MaterialIcon icon={item.icon} className="landing-feature-glyph" />
               </div>
-              <h3>{item.title}</h3>
-              <p>{item.description}</p>
+              <div className="landing-feature-copy">
+                <h3>{item.title}</h3>
+                <p>{item.description}</p>
+              </div>
             </article>
           ))}
         </div>
@@ -495,7 +567,7 @@ export default function PublicHome() {
         </div>
       </section>
 
-      <section id="faq" className="landing-section">
+      <section id="faq" className="landing-section landing-section-plain">
         <div className="section-heading">
           <div>
             <p className="section-kicker">Frequently asked questions</p>
@@ -516,7 +588,7 @@ export default function PublicHome() {
       <section id="signup" className="landing-signup">
         <div className="landing-signup-copy">
           <p className="section-kicker">Signup</p>
-          <h2>Request pilot access or join the waitlist.</h2>
+          <h2>Request a demo or join the waitlist.</h2>
           <p>
             This positions the page like a real startup product: visitors can
             register interest, share evaluation context, and signal whether they
@@ -707,13 +779,13 @@ export default function PublicHome() {
             disabled={signupState === 'submitting'}
           >
             <span>
-              {signupState === 'submitting' ? 'Submitting request...' : 'Join early access'}
+              {signupState === 'submitting' ? 'Submitting request...' : 'Request demo access'}
             </span>
             <MaterialIcon icon="arrow_outward" className="landing-button-icon" />
           </button>
 
           <p className="landing-form-note">
-            No credit card required. This form is framed as an early-access
+            No credit card required. This form is framed as a demo or early-access
             request for pilot teams, design partners, and serious evaluators.
           </p>
 
@@ -722,6 +794,78 @@ export default function PublicHome() {
           ) : null}
         </form>
       </section>
+
+      <footer className="landing-footer">
+        <div className="landing-footer-grid">
+          <div className="landing-footer-brand">
+            <Link href="/" className="landing-brand">
+              <span className="landing-brand-mark">
+                <BrandMark className="brand-mark-image" />
+              </span>
+              <span className="landing-brand-copy">
+                <strong>CONVERGE</strong>
+                <span>Knowledge capture platform</span>
+              </span>
+            </Link>
+
+            <p>
+              Converge helps teams preserve why decisions were made, retrieve
+              grounded answers from chat history, and produce documentation that
+              is clean enough for operational review.
+            </p>
+
+            <div className="landing-footer-badges">
+              <span className="landing-footer-badge">Demo-ready MVP</span>
+              <span className="landing-footer-badge">Production path defined</span>
+            </div>
+          </div>
+
+          <div className="landing-footer-column">
+            <h3>Product</h3>
+            <a href="#features">Features</a>
+            <a href="#surfaces">Product surfaces</a>
+            <a href="#pricing">Rollout options</a>
+            <a href="#signup">Request demo</a>
+          </div>
+
+          <div className="landing-footer-column">
+            <h3>Workspace flow</h3>
+            <strong>Public first, workspace second</strong>
+            <p>
+              Visitors first understand the product at a high level. The sample
+              company and its decisions only appear after entering the workspace.
+            </p>
+            <Link href="/dashboard" className="landing-footer-link">
+              Open sample workspace
+            </Link>
+          </div>
+
+          <div className="landing-footer-column wide">
+            <h3>MVP stack</h3>
+            <div className="landing-footer-stack">
+              {mvpStack.map((item) => (
+                <span key={item} className="landing-footer-chip">
+                  {item}
+                </span>
+              ))}
+            </div>
+
+            <h3>Production direction</h3>
+            <div className="landing-footer-stack compact">
+              {productionDirection.map((item) => (
+                <span key={item} className="landing-footer-chip">
+                  {item}
+                </span>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        <div className="landing-footer-bottom">
+          <span>Prepared for investor demos, pilot conversations, and formal presentations.</span>
+          <span>A fictional workspace is used only inside the product demo, not on the public homepage.</span>
+        </div>
+      </footer>
     </div>
   );
 }

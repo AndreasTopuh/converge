@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import MaterialIcon from '@/components/MaterialIcon';
-import { autoDocs } from '@/data/mockData';
+import { autoDocs, demoCompany } from '@/data/mockData';
 
 const formatInline = (value: string) =>
   value.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
@@ -188,12 +188,12 @@ export default function AutoDocsPage() {
         <div className="page-header-copy">
           <div className="eyebrow">
             <MaterialIcon icon="description" className="eyebrow-icon" />
-            Generated documentation
+            {demoCompany.shortName} generated documentation
           </div>
           <h1>Auto Docs</h1>
           <p>
             Review generated SOPs and structured documentation compiled from the
-            decisions your workspace has already captured.
+            decisions captured inside the {demoCompany.name} sample workspace.
           </p>
         </div>
 
@@ -201,7 +201,7 @@ export default function AutoDocsPage() {
           <MaterialIcon icon="auto_stories" className="header-note-icon" />
           <div>
             <strong>{autoDocs.length} documents available</strong>
-            <span>Published and draft assets are organized in one review queue</span>
+            <span>Payments, onboarding, and governance docs are organized in one review queue</span>
           </div>
         </div>
       </div>

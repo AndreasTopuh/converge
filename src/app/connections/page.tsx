@@ -1,18 +1,23 @@
 import MaterialIcon from '@/components/MaterialIcon';
-import { connections, connectionStats } from '@/data/mockData';
+import {
+  connections,
+  connectionStats,
+  demoCompany,
+  mvpStack,
+} from '@/data/mockData';
 
 const statCards = [
   {
     label: 'Messages ingested',
     value: connectionStats.totalMessages.toLocaleString(),
-    note: 'Captured from connected channels',
+    note: `Captured from ${demoCompany.shortName}'s connected Slack channels`,
     icon: 'mail',
     tone: 'accent',
   },
   {
     label: 'Decisions captured',
     value: connectionStats.decisionsCapture.toString(),
-    note: 'Structured and ready for retrieval',
+    note: 'Structured and ready for search, feed review, and documentation',
     icon: 'checklist',
     tone: 'success',
   },
@@ -26,7 +31,7 @@ const statCards = [
   {
     label: 'Knowledge items',
     value: connectionStats.knowledgeItems.toString(),
-    note: 'Indexed assets available across workflows',
+    note: 'Indexed demo assets available across the workspace',
     icon: 'database',
     tone: 'warning',
   },
@@ -42,19 +47,19 @@ export default function ConnectionsPage() {
         <div className="page-header-copy">
           <div className="eyebrow">
             <MaterialIcon icon="lan" className="eyebrow-icon" />
-            Connected sources
+            {demoCompany.shortName} data sources
           </div>
           <h1>Connections</h1>
           <p>
-            Manage the systems that feed your workspace with searchable
-            conversations, decisions, and reference material.
+            Manage the systems that feed the {demoCompany.name} demo workspace
+            with searchable conversations, decisions, and reference material.
           </p>
         </div>
 
         <div className="header-note">
           <MaterialIcon icon="sync" className="header-note-icon" />
           <div>
-            <strong>Live synchronization</strong>
+            <strong>Slack ingest is live</strong>
             <span>Latest workspace refresh: {latestSync ?? 'Unavailable'}</span>
           </div>
         </div>
@@ -74,6 +79,31 @@ export default function ConnectionsPage() {
           </div>
         ))}
       </div>
+
+      <section className="surface-panel integration-note">
+        <div className="panel-heading">
+          <div>
+            <p className="panel-kicker">Demo ingest path</p>
+            <h2>What is actually powering the sample workspace</h2>
+          </div>
+          <MaterialIcon icon="database" className="panel-heading-icon" />
+        </div>
+
+        <p className="integration-note-copy">
+          For the live demo, Slack is the active source feeding the sample
+          workspace. The rest of the page shows the production-minded connector
+          roadmap that expands the same knowledge model into email, documents,
+          and other enterprise systems.
+        </p>
+
+        <div className="stack-chip-row">
+          {mvpStack.slice(0, 7).map((item) => (
+            <span key={item} className="stack-chip">
+              {item}
+            </span>
+          ))}
+        </div>
+      </section>
 
       <div className="card-grid">
         {connections.map((connection) => {
@@ -96,8 +126,8 @@ export default function ConnectionsPage() {
                     <span className="name">{connection.platform}</span>
                     <p className="connection-summary">
                       {isConnected
-                        ? 'Active source feeding fresh team context into Converge.'
-                        : 'Planned connector for broader communication coverage.'}
+                        ? `Active source feeding fresh ${demoCompany.shortName} team context into Converge.`
+                        : 'Planned connector for broader enterprise knowledge coverage.'}
                     </p>
                   </div>
                 </div>
@@ -138,8 +168,8 @@ export default function ConnectionsPage() {
                 </div>
               ) : (
                 <div className="connection-empty">
-                  Connector setup is not enabled yet. This integration is planned
-                  for a future release.
+                  Connector setup is not enabled yet. This integration is part
+                  of the production roadmap shown in the architecture deck.
                 </div>
               )}
             </article>

@@ -8,6 +8,7 @@ import {
   autoDocs,
   brainFeedItems,
   connectionStats,
+  demoCompany,
   suggestedQuestions,
 } from '@/data/mockData';
 
@@ -15,32 +16,32 @@ const actionCards = [
   {
     href: '/ask',
     icon: 'search',
-    title: 'Query Knowledge',
-    desc: 'Search captured team decisions and get answers grounded in source conversations.',
-    meta: 'Traceable answers with source context',
+    title: 'Ask the Workspace',
+    desc: `Search ${demoCompany.shortName} decisions and get answers grounded in the exact conversations that support them.`,
+    meta: 'Traceable answers with people, channel, and date context',
     tone: 'accent',
   },
   {
     href: '/auto-docs',
     icon: 'description',
-    title: 'Generate SOPs',
-    desc: 'Turn recurring decisions into structured documents that are ready to review and share.',
-    meta: 'Drafts and published docs in one place',
+    title: 'Review Generated Docs',
+    desc: `Open ${demoCompany.shortName} SOPs and playbooks generated from the same captured decision history.`,
+    meta: 'Published and draft documents in one review queue',
     tone: 'success',
   },
   {
     href: '/connections',
     icon: 'lan',
-    title: 'Manage Integrations',
-    desc: 'Keep Slack and future data sources aligned so Converge stays current and reliable.',
-    meta: 'Operational sync across active channels',
+    title: 'Understand Ingest Sources',
+    desc: 'See which systems feed the workspace today and which connectors represent the next enterprise expansion.',
+    meta: 'Slack live today with a clear integration roadmap',
     tone: 'warning',
   },
   {
     href: '/brain-feed',
     icon: 'timeline',
-    title: 'Review Brain Feed',
-    desc: 'Monitor the latest decisions, reasoning, and stakeholders captured across your workspace.',
+    title: 'Review Decision Feed',
+    desc: `Monitor the latest decisions, reasoning, and stakeholders captured across the ${demoCompany.shortName} workspace.`,
     meta: 'A clean audit trail for strategic decisions',
     tone: 'neutral',
   },
@@ -56,7 +57,7 @@ export default function DashboardHome() {
     {
       label: 'Messages indexed',
       value: connectionStats.totalMessages.toLocaleString(),
-      note: 'Captured across active workspace channels',
+      note: `Captured across ${demoCompany.shortName} workspace channels`,
       icon: 'mail',
       tone: 'accent',
     },
@@ -70,14 +71,14 @@ export default function DashboardHome() {
     {
       label: 'Published docs',
       value: publishedDocs.toString(),
-      note: 'Governed knowledge ready to share',
+      note: 'Playbooks ready for leadership, onboarding, and operations',
       icon: 'library_books',
       tone: 'warning',
     },
     {
       label: 'Active channels',
       value: connectionStats.activeChannels.toString(),
-      note: 'Live sources keeping the workspace fresh',
+      note: 'Seeded demo channels staying consistent across all views',
       icon: 'forum',
       tone: 'neutral',
     },
@@ -87,7 +88,7 @@ export default function DashboardHome() {
     {
       icon: 'sync',
       title: 'Latest sync',
-      detail: 'Slack workspace refreshed 2 minutes ago',
+      detail: `${demoCompany.name} Slack workspace refreshed 2 minutes ago`,
     },
     {
       icon: 'verified_user',
@@ -97,7 +98,12 @@ export default function DashboardHome() {
     {
       icon: 'description',
       title: 'Documentation coverage',
-      detail: `${publishedDocs} published playbooks available for review`,
+      detail: `${publishedDocs} published playbooks available across payments, onboarding, and governance`,
+    },
+    {
+      icon: 'psychology_alt',
+      title: 'Reasoning layer',
+      detail: 'Claude Sonnet 4.6 is configured for high-confidence reasoning extraction in the demo stack',
     },
   ];
 
@@ -119,19 +125,32 @@ export default function DashboardHome() {
         <div className="hero-copy">
           <div className="eyebrow">
             <MaterialIcon icon="verified" className="eyebrow-icon" />
-            Executive-ready knowledge workspace
+            {demoCompany.name} demo workspace
           </div>
 
-          <h1 className="hero-title">
-            Turn team conversations into decisions, documents, and dependable
-            answers.
-          </h1>
+          <h1 className="hero-title">{demoCompany.name}: one workspace for decisions, documents, and grounded answers.</h1>
 
           <p className="hero-subtitle">
-            Converge centralizes operational context from chat, structures it
-            into searchable knowledge, and presents outcomes in a format that is
-            clean enough for business review.
+            This sample workspace represents a fictional Malaysia expansion
+            team. Converge turns {demoCompany.shortName}&apos;s Slack
+            discussions into searchable decisions, generated SOPs, and sourced
+            answers that are clear enough for a live demo or executive review.
           </p>
+
+          <div className="hero-context-card">
+            <div className="hero-context-top">
+              <MaterialIcon icon="apartment" className="hero-context-icon" />
+              <div className="hero-context-copy">
+                <strong>Demo scenario</strong>
+                <span>{demoCompany.description}</span>
+              </div>
+            </div>
+            <div className="hero-context-tags">
+              <span className="hero-context-tag">Payments migration</span>
+              <span className="hero-context-tag">Client onboarding</span>
+              <span className="hero-context-tag">AI reasoning stack</span>
+            </div>
+          </div>
 
           <form className="hero-form" onSubmit={handleSearch}>
             <label className="hero-input-shell" htmlFor="home-query">
@@ -140,7 +159,7 @@ export default function DashboardHome() {
                 id="home-query"
                 type="text"
                 className="hero-input"
-                placeholder="Ask about onboarding, architecture, or recent decisions"
+                placeholder={`Ask about ${demoCompany.shortName}'s payment migration, onboarding playbook, or AI stack`}
                 value={query}
                 onChange={(event) => setQuery(event.target.value)}
               />
@@ -179,7 +198,7 @@ export default function DashboardHome() {
         <aside className="hero-aside">
           <div className="panel-heading">
             <div>
-              <p className="panel-kicker">System snapshot</p>
+              <p className="panel-kicker">{demoCompany.shortName} snapshot</p>
               <h2>Operational visibility</h2>
             </div>
             <MaterialIcon icon="monitoring" className="panel-heading-icon" />
@@ -206,7 +225,7 @@ export default function DashboardHome() {
         <div className="section-heading">
           <div>
             <p className="section-kicker">Core workflows</p>
-            <h2>Operate knowledge through a single, consistent interface.</h2>
+            <h2>Walk through the exact views you can use during the demo.</h2>
           </div>
         </div>
 
@@ -244,7 +263,7 @@ export default function DashboardHome() {
         <div className="surface-panel dashboard-panel">
           <div className="panel-heading">
             <div>
-              <p className="panel-kicker">Recent knowledge</p>
+              <p className="panel-kicker">{demoCompany.shortName} decision feed</p>
               <h2>Latest decision signals</h2>
             </div>
             <Link href="/brain-feed" className="panel-link">
@@ -289,7 +308,7 @@ export default function DashboardHome() {
           <div className="panel-heading">
             <div>
               <p className="panel-kicker">Readiness</p>
-              <h2>What the workspace can support today</h2>
+              <h2>What this demo workspace can support today</h2>
             </div>
             <MaterialIcon icon="shield" className="panel-heading-icon" />
           </div>

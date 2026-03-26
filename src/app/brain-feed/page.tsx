@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import MaterialIcon from '@/components/MaterialIcon';
-import { brainFeedItems } from '@/data/mockData';
+import { brainFeedItems, demoCompany } from '@/data/mockData';
 
 const allTopics = ['All', ...Array.from(new Set(brainFeedItems.map((item) => item.topic)))];
 
@@ -20,12 +20,13 @@ export default function BrainFeedPage() {
         <div className="page-header-copy">
           <div className="eyebrow">
             <MaterialIcon icon="timeline" className="eyebrow-icon" />
-            Decision stream
+            {demoCompany.shortName} decision stream
           </div>
           <h1>Brain Feed</h1>
           <p>
             Review extracted decisions, the reasoning behind them, and the people
-            involved across your connected channels.
+            involved across {demoCompany.name}&apos;s payments, engineering,
+            client-ops, and AI research channels.
           </p>
         </div>
 
@@ -33,7 +34,7 @@ export default function BrainFeedPage() {
           <MaterialIcon icon="psychology_alt" className="header-note-icon" />
           <div>
             <strong>{brainFeedItems.length} signals indexed</strong>
-            <span>Updated from the latest synchronized workspace activity</span>
+            <span>Updated from the seeded activity inside the {demoCompany.shortName} demo workspace</span>
           </div>
         </div>
       </div>
@@ -41,7 +42,7 @@ export default function BrainFeedPage() {
       <div className="filter-bar">
         <div className="filter-bar-copy">
           <p className="section-kicker">Filter by topic</p>
-          <h2>Focus the feed by decision area.</h2>
+          <h2>Focus the demo feed by decision area.</h2>
         </div>
 
         <div className="feed-filters">

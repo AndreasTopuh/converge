@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import MaterialIcon from '@/components/MaterialIcon';
 import BrandMark from '@/components/BrandMark';
+import { demoCompany } from '@/data/mockData';
 
 const navItems = [
   { href: '/dashboard', label: 'Dashboard', icon: 'space_dashboard' },
@@ -55,10 +56,10 @@ export default function Sidebar() {
               <MaterialIcon icon="apartment" className="workspace-icon-glyph" />
             </div>
             <div className="workspace-info">
-              <div className="workspace-name">Converge Demo</div>
+              <div className="workspace-name">{demoCompany.name}</div>
               <div className="workspace-status">
                 <span className="workspace-status-dot" />
-                Slack sync active
+                Malaysia demo workspace live
               </div>
             </div>
           </div>

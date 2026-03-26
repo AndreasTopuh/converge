@@ -5,6 +5,7 @@ import { useSearchParams } from 'next/navigation';
 import MaterialIcon from '@/components/MaterialIcon';
 import {
   askResponses,
+  demoCompany,
   suggestedQuestions,
   type AskResult,
 } from '@/data/mockData';
@@ -21,12 +22,12 @@ function resolveAskResult(question: string): AskResult {
   }
 
   return {
-    answer: `Based on the captured knowledge in your workspace, I found related discussions about "${question}". The topic appeared across multiple channels, but no definitive decision was recorded with high confidence. Consider opening a dedicated thread so the team can document a final outcome.`,
+    answer: `Based on the captured knowledge in ${demoCompany.name}'s workspace, I found related discussions about "${question}". The topic appeared across multiple channels, but no definitive decision was recorded with high confidence. Consider opening a dedicated thread so the team can document a final outcome.`,
     sources: [
       {
         channel: '#general',
         date: 'March 2026',
-        people: ['Team'],
+        people: ['Northstar team'],
         messagePreview:
           '"Related discussions were found across multiple channels, but the conclusion was not formalized..."',
       },
@@ -75,12 +76,13 @@ function AskContent() {
         <div className="page-header-copy">
           <div className="eyebrow">
             <MaterialIcon icon="search" className="eyebrow-icon" />
-            Knowledge search
+            {demoCompany.name} search
           </div>
-          <h1>Ask Anything</h1>
+          <h1>Ask {demoCompany.shortName}</h1>
           <p>
-            Search your organization&apos;s captured knowledge and retrieve
-            answers linked back to the conversations that support them.
+            Search {demoCompany.name}&apos;s captured knowledge and retrieve
+            answers linked back to the conversations that support them. This is
+            the primary Q&A flow used in the live demo.
           </p>
         </div>
 
@@ -88,7 +90,7 @@ function AskContent() {
           <MaterialIcon icon="travel_explore" className="header-note-icon" />
           <div>
             <strong>Grounded retrieval</strong>
-            <span>Each answer keeps its conversation trail visible for review</span>
+            <span>Each answer keeps the channel, date, and people visible for review</span>
           </div>
         </div>
       </div>
@@ -102,7 +104,7 @@ function AskContent() {
                 id="ask-input"
                 type="text"
                 className="ask-input"
-                placeholder="Ask about a decision, rationale, owner, or timeline"
+                placeholder={`Ask why ${demoCompany.shortName} changed payment provider, chose Qdrant, or extended onboarding`}
                 value={query}
                 onChange={(event) => setQuery(event.target.value)}
                 autoComplete="off"
@@ -120,7 +122,7 @@ function AskContent() {
 
           {!result && !isLoading && !askedQuestion && (
             <div className="suggested-section">
-              <div className="suggested-label">Suggested questions</div>
+              <div className="suggested-label">Try one of the demo questions</div>
               <div className="suggested-grid">
                 {suggestedQuestions.map((question) => (
                   <button
@@ -156,7 +158,7 @@ function AskContent() {
               <div className="answer-header">
                 <div className="answer-header-left">
                   <MaterialIcon icon="lightbulb" className="answer-header-icon" />
-                  <span>Answer</span>
+                  <span>Sourced answer</span>
                 </div>
                 <span className={`confidence-badge ${result.confidence}`}>
                   {result.confidence} confidence
@@ -216,7 +218,9 @@ function AskContent() {
               </div>
               <div className="status-item-copy">
                 <h3>Be specific</h3>
-                <p>Reference a team, project, or decision area when possible.</p>
+                <p>
+                  Reference a team, project, or decision area inside the {demoCompany.shortName} workspace.
+                </p>
               </div>
             </div>
 
@@ -227,8 +231,7 @@ function AskContent() {
               <div className="status-item-copy">
                 <h3>Use timeframe hints</h3>
                 <p>
-                  Mention a month, quarter, or milestone if you need a narrower
-                  answer.
+                  Mention a month, quarter, or milestone if you need a narrower answer.
                 </p>
               </div>
             </div>

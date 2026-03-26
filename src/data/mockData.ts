@@ -45,6 +45,34 @@ export interface AutoDoc {
   content: string;
 }
 
+export const demoCompany = {
+  name: 'Northstar Commerce',
+  shortName: 'Northstar',
+  workspaceName: 'Northstar Commerce Workspace',
+  workspaceSubtitle: 'Malaysia expansion, product, and operations workspace',
+  description:
+    'A fictional growth-stage commerce company used across the Converge demo. The workspace combines payments, engineering, client operations, and AI research decisions in one searchable system.',
+};
+
+export const mvpStack = [
+  'Slack Events API',
+  'BullMQ',
+  'Redis',
+  'Gemini Flash',
+  'Claude Sonnet 4.6',
+  'Qdrant Cloud',
+  'Supabase',
+  'LlamaIndex',
+  'Next.js',
+];
+
+export const productionDirection = [
+  'GraphRAG',
+  'Neo4j AuraDB',
+  'Pinecone Serverless',
+  'Kafka adapters',
+];
+
 // ================================
 // CONNECTIONS
 // ================================
@@ -53,7 +81,7 @@ export const connections: Connection[] = [
     id: '1',
     platform: 'Slack',
     icon: 'chat',
-    workspace: 'Converge Demo Workspace',
+    workspace: demoCompany.workspaceName,
     status: 'connected',
     channels: 8,
     lastSync: '2 minutes ago',
@@ -61,8 +89,8 @@ export const connections: Connection[] = [
   },
   {
     id: '2',
-    platform: 'Discord',
-    icon: 'forum',
+    platform: 'Gmail',
+    icon: 'mail',
     workspace: '',
     status: 'coming_soon',
     channels: 0,
@@ -71,8 +99,8 @@ export const connections: Connection[] = [
   },
   {
     id: '3',
-    platform: 'Telegram',
-    icon: 'send',
+    platform: 'Google Drive',
+    icon: 'library_books',
     workspace: '',
     status: 'coming_soon',
     channels: 0,
@@ -104,7 +132,7 @@ export const connectionStats = {
 export const brainFeedItems: BrainFeedItem[] = [
   {
     id: '1',
-    decision: 'Switched payment provider from Stripe to Billplz for Malaysian market',
+    decision: 'Switched Northstar Malaysia payments from Stripe to Billplz',
     reasoning:
       'Billplz has better local bank integration, lower transaction fees for MYR payments at 1.5% versus 3.4%, and supports FPX direct debit which 73% of our Malaysian users prefer.',
     people: ['Shafin', 'Sherman', 'Andreas'],
@@ -115,7 +143,7 @@ export const brainFeedItems: BrainFeedItem[] = [
   },
   {
     id: '2',
-    decision: 'Adopted weekly sprint retrospectives over bi-weekly format',
+    decision: 'Moved Northstar engineering retrospectives to a weekly cadence',
     reasoning:
       'Team velocity dropped 30% in February. Analysis showed issues were compounding over two-week cycles. Weekly retros allow faster course correction and the team preferred shorter, more focused sessions.',
     people: ['Sherman', 'Celeste'],
@@ -126,7 +154,7 @@ export const brainFeedItems: BrainFeedItem[] = [
   },
   {
     id: '3',
-    decision: 'Chose Qdrant over pgvector for vector storage',
+    decision: 'Chose Qdrant over pgvector for Northstar knowledge retrieval',
     reasoning:
       'Benchmarked both at a 99% recall threshold and both achieved sub-100ms latency. Qdrant metadata filtering is purpose-built for our use case: filter by workspace, channel, person, and date range simultaneously.',
     people: ['Shafin', 'Andreas'],
@@ -137,7 +165,7 @@ export const brainFeedItems: BrainFeedItem[] = [
   },
   {
     id: '4',
-    decision: 'Extended client onboarding from 3 days to 5 days',
+    decision: 'Extended Northstar client onboarding from 3 days to 5 days',
     reasoning:
       'Customer churn data showed 40% of churned clients cited "did not understand the product" within the first month. Adding 2 extra onboarding days with hands-on workshops reduced confusion and improved activation rates.',
     people: ['Aishah', 'Sherman'],
@@ -185,18 +213,18 @@ export const brainFeedItems: BrainFeedItem[] = [
 // ASK ANYTHING - Pre-built Q&A
 // ================================
 export const suggestedQuestions = [
-  'Why did we switch our payment provider?',
-  'What was the reasoning behind choosing Qdrant?',
-  'Who made the decision about sprint retrospectives?',
-  'What is our client onboarding process?',
-  'Why are we using Claude instead of GPT-4?',
-  'When did we decide to postpone the mobile app?',
+  'Why did Northstar switch payment provider?',
+  'Why did Northstar choose Qdrant?',
+  "Who changed Northstar's sprint retrospective cadence?",
+  "What is Northstar's onboarding playbook?",
+  'Why is Northstar using Claude Sonnet 4.6?',
+  'When did Northstar postpone the mobile app?',
 ];
 
 export const askResponses: Record<string, AskResult> = {
-  'Why did we switch our payment provider?': {
+  'Why did Northstar switch payment provider?': {
     answer:
-      "The team switched from Stripe to Billplz for the Malaysian market. The decision was driven by better local bank integration, lower transaction fees for MYR payments at 1.5% compared to Stripe's 3.4%, and FPX direct debit support, which 73% of Malaysian users prefer.",
+      "Northstar Commerce switched from Stripe to Billplz for its Malaysia rollout. The decision was driven by better local bank integration, lower transaction fees for MYR payments at 1.5% compared to Stripe's 3.4%, and FPX direct debit support, which 73% of Northstar's Malaysian users prefer.",
     sources: [
       {
         channel: '#payments',
@@ -208,9 +236,9 @@ export const askResponses: Record<string, AskResult> = {
     ],
     confidence: 'high',
   },
-  'What was the reasoning behind choosing Qdrant?': {
+  'Why did Northstar choose Qdrant?': {
     answer:
-      'Qdrant was chosen over pgvector after benchmarking both solutions. At a 99% recall threshold, both achieved sub-100ms latency. The deciding factor was Qdrant\'s metadata filtering capability, which fits the need to filter by workspace, channel, person, and date range simultaneously.',
+      "Northstar Commerce chose Qdrant over pgvector after benchmarking both solutions. At a 99% recall threshold, both achieved sub-100ms latency. The deciding factor was Qdrant's metadata filtering capability, which fits the need to filter by workspace, channel, person, and date range simultaneously.",
     sources: [
       {
         channel: '#architecture',
@@ -222,9 +250,9 @@ export const askResponses: Record<string, AskResult> = {
     ],
     confidence: 'high',
   },
-  'Who made the decision about sprint retrospectives?': {
+  "Who changed Northstar's sprint retrospective cadence?": {
     answer:
-      'Sherman and Celeste made the decision to switch from bi-weekly to weekly sprint retrospectives. The change was prompted by a 30% drop in team velocity during February 2026, and the team preferred shorter, more focused sessions for faster course correction.',
+      'Sherman and Celeste approved the change from bi-weekly to weekly sprint retrospectives for the Northstar engineering team. The shift was prompted by a 30% drop in team velocity during February 2026, and the team preferred shorter, more focused sessions for faster course correction.',
     sources: [
       {
         channel: '#engineering',
@@ -236,9 +264,9 @@ export const askResponses: Record<string, AskResult> = {
     ],
     confidence: 'high',
   },
-  'What is our client onboarding process?': {
+  "What is Northstar's onboarding playbook?": {
     answer:
-      'The client onboarding process was extended from 3 days to 5 days after churn data revealed that 40% of churned clients said they did not understand the product within their first month. The additional 2 days include hands-on workshops designed to improve activation rates and reduce confusion during setup.',
+      'Northstar extended its client onboarding process from 3 days to 5 days after churn data revealed that 40% of churned clients said they did not understand the product within their first month. The additional 2 days include hands-on workshops designed to improve activation rates and reduce confusion during setup.',
     sources: [
       {
         channel: '#client-ops',
@@ -250,9 +278,9 @@ export const askResponses: Record<string, AskResult> = {
     ],
     confidence: 'high',
   },
-  'Why are we using Claude instead of GPT-4?': {
+  'Why is Northstar using Claude Sonnet 4.6?': {
     answer:
-      'Claude Sonnet 4.6 was chosen for reasoning extraction after testing both models on 200 Slack threads. Claude identified implicit decisions in 87% of cases compared to GPT-4 at 71%, and it handled Malaysian English colloquialisms better while producing more natural structured JSON output.',
+      'Northstar uses Claude Sonnet 4.6 for reasoning extraction after testing both models on 200 Slack threads. Claude identified implicit decisions in 87% of cases compared to GPT-4 at 71%, and it handled Malaysian English colloquialisms better while producing more natural structured JSON output.',
     sources: [
       {
         channel: '#ai-research',
@@ -264,9 +292,9 @@ export const askResponses: Record<string, AskResult> = {
     ],
     confidence: 'high',
   },
-  'When did we decide to postpone the mobile app?': {
+  'When did Northstar postpone the mobile app?': {
     answer:
-      'The mobile app was postponed to Q3 2026 on March 20, 2026. The decision was based on usage data showing 94% of interactions happen on desktop during work hours. The team concluded that mobile adds complexity without proportional value at the current stage and will revisit after reaching 100 paying customers.',
+      'Northstar postponed the mobile app to Q3 2026 on March 20, 2026. The decision was based on usage data showing 94% of interactions happen on desktop during work hours. The team concluded that mobile adds complexity without proportional value at the current stage and will revisit after reaching 100 paying customers.',
     sources: [
       {
         channel: '#product',
@@ -286,14 +314,14 @@ export const askResponses: Record<string, AskResult> = {
 export const autoDocs: AutoDoc[] = [
   {
     id: '1',
-    title: 'Payment Provider Selection - Standard Operating Procedure',
+    title: 'Northstar Malaysia Payment Provider Selection SOP',
     description:
-      'Comprehensive SOP for evaluating and selecting payment providers for the Malaysian market, compiled from 12 decision threads.',
+      'Northstar Commerce SOP for evaluating and selecting payment providers for the Malaysian market, compiled from 12 decision threads.',
     generatedDate: '2026-03-25',
     sourceCount: 12,
     status: 'published',
     content: `## 1. Overview
-This SOP outlines the process for evaluating payment providers for the Malaysian market, based on decisions captured from the #payments and #procurement channels.
+This SOP outlines how Northstar Commerce evaluates payment providers for the Malaysian market, based on decisions captured from the #payments and #procurement channels.
 
 ## 2. Selection Criteria
 Based on team discussions (Shafin, Sherman, Andreas - March 2026):
@@ -314,9 +342,9 @@ Quarterly review - next evaluation: June 2026.`,
   },
   {
     id: '2',
-    title: 'Engineering Sprint Process - Team Guidelines',
+    title: 'Northstar Engineering Sprint Process',
     description:
-      'Updated sprint process document reflecting the switch to weekly retrospectives, compiled from 8 decision threads.',
+      'Sprint process document for the Northstar engineering team, reflecting the switch to weekly retrospectives and compiled from 8 decision threads.',
     generatedDate: '2026-03-24',
     sourceCount: 8,
     status: 'published',
@@ -341,9 +369,9 @@ Bi-weekly retrospectives allowed issues to compound. Weekly format enables faste
   },
   {
     id: '3',
-    title: 'Client Onboarding Playbook',
+    title: 'Northstar Client Onboarding Playbook',
     description:
-      'Step-by-step onboarding guide for new clients, compiled from 15 decision threads across client-ops and product channels.',
+      'Step-by-step onboarding guide for Northstar Commerce clients, compiled from 15 decision threads across client-ops and product channels.',
     generatedDate: '2026-03-23',
     sourceCount: 15,
     status: 'published',
@@ -375,9 +403,9 @@ Bi-weekly retrospectives allowed issues to compound. Weekly format enables faste
   },
   {
     id: '4',
-    title: 'Vendor Evaluation Framework',
+    title: 'Northstar Vendor Evaluation Framework',
     description:
-      'Standardized criteria for evaluating technology vendors, compiled from 6 decision threads.',
+      'Standardized criteria for evaluating technology vendors for Northstar Commerce, compiled from 6 decision threads.',
     generatedDate: '2026-03-20',
     sourceCount: 6,
     status: 'draft',
