@@ -29,9 +29,9 @@ const statCards = [
     tone: 'neutral',
   },
   {
-    label: 'Knowledge items',
-    value: connectionStats.knowledgeItems.toString(),
-    note: 'Indexed demo assets available across the workspace',
+    label: 'Roadmap connectors',
+    value: connectionStats.roadmapConnectors.toString(),
+    note: 'Gmail, Notion, Google Drive, Jira, and Teams extend the same model',
     icon: 'database',
     tone: 'warning',
   },
@@ -92,8 +92,8 @@ export default function ConnectionsPage() {
         <p className="integration-note-copy">
           For the live demo, Slack is the active source feeding the sample
           workspace. The rest of the page shows the production-minded connector
-          roadmap that expands the same knowledge model into email, documents,
-          and other enterprise systems.
+          roadmap that expands the same knowledge model into Gmail, Notion,
+          Google Drive, Jira, and Microsoft Teams.
         </p>
 
         <div className="stack-chip-row">
@@ -127,7 +127,7 @@ export default function ConnectionsPage() {
                     <p className="connection-summary">
                       {isConnected
                         ? `Active source feeding fresh ${demoCompany.shortName} team context into Converge.`
-                        : 'Planned connector for broader enterprise knowledge coverage.'}
+                        : 'Planned connector in the enterprise roadmap beyond the live Slack ingest.'}
                     </p>
                   </div>
                 </div>

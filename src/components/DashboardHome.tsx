@@ -98,7 +98,7 @@ export default function DashboardHome() {
     {
       icon: 'description',
       title: 'Documentation coverage',
-      detail: `${publishedDocs} published playbooks available across payments, onboarding, and governance`,
+      detail: `${publishedDocs} published docs available across payments, sprint governance, and onboarding`,
     },
     {
       icon: 'psychology_alt',
@@ -133,8 +133,9 @@ export default function DashboardHome() {
           <p className="hero-subtitle">
             This sample workspace represents a fictional Malaysia expansion
             team. Converge turns {demoCompany.shortName}&apos;s Slack
-            discussions into searchable decisions, generated SOPs, and sourced
-            answers that are clear enough for a live demo or executive review.
+            discussions into searchable decision records, generated
+            documentation, and sourced answers that a judge can understand in
+            under a minute.
           </p>
 
           <div className="hero-context-card">
@@ -146,7 +147,8 @@ export default function DashboardHome() {
               </div>
             </div>
             <div className="hero-context-tags">
-              <span className="hero-context-tag">Payments migration</span>
+              <span className="hero-context-tag">Payment infrastructure</span>
+              <span className="hero-context-tag">Sprint governance</span>
               <span className="hero-context-tag">Client onboarding</span>
               <span className="hero-context-tag">AI reasoning stack</span>
             </div>
@@ -287,7 +289,7 @@ export default function DashboardHome() {
 
                 <div className="activity-meta">
                   <span className="topic-tag">{item.topic}</span>
-                  <span className="meta-pill">
+                  <span className="meta-pill channel-pill">
                     <MaterialIcon icon="forum" className="meta-pill-icon" />
                     {item.channel}
                   </span>

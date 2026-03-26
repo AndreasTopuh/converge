@@ -75,7 +75,7 @@ export default function BrainFeedPage() {
 
             <div className="feed-meta">
               <span className="topic-tag">{item.topic}</span>
-              <span className="meta-pill">
+              <span className="meta-pill channel-pill">
                 <MaterialIcon icon="forum" className="meta-pill-icon" />
                 {item.channel}
               </span>

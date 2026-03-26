@@ -204,8 +204,8 @@ export default function PublicHome() {
   const publishedDocs = autoDocs.filter((doc) => doc.status === 'published').length;
   const heroFacts = [
     { value: connectionStats.totalMessages.toLocaleString(), label: 'messages indexed' },
-    { value: connectionStats.decisionsCapture.toString(), label: 'decisions traced' },
-    { value: publishedDocs.toString(), label: 'published docs ready' },
+    { value: connectionStats.decisionsCapture.toString(), label: 'captured decisions' },
+    { value: publishedDocs.toString(), label: 'published docs' },
   ];
   const previewHighlights = [
     { label: 'Source-linked', value: 'People, channel, and date stay visible' },
@@ -320,14 +320,14 @@ export default function PublicHome() {
             Built for startup teams that move through chat
           </div>
 
-          <h1>Turn chat into sourced answers and shareable company knowledge.</h1>
+          <h1>Turn chat into sourced answers and company knowledge.</h1>
 
           <p>
-            Converge captures decisions, preserves reasoning, and turns
-            day-to-day operating chat into a knowledge layer leadership can
-            actually review. The public homepage stays company-agnostic, while
-            the sample workspace inside the product shows a realistic operating
-            scenario across payments, onboarding, and AI decisions.
+            Converge turns team chat into structured, queryable company
+            knowledge. It captures decisions, preserves reasoning, and keeps
+            source evidence visible so leadership can review what happened, why
+            it happened, and where it came from without digging through raw
+            Slack history.
           </p>
 
           <div className="landing-hero-facts">
