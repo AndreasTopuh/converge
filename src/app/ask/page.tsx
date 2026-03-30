@@ -1,6 +1,6 @@
 'use client';
 
-import { FormEvent, Suspense, useState } from 'react';
+import { FormEvent, Suspense, useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import MaterialIcon from '@/components/MaterialIcon';
 import {
@@ -15,32 +15,13 @@ const qdrantQuestion = 'Why did Northstar choose Qdrant?';
 const sprintQuestion = "Who changed Northstar's sprint retrospective cadence?";
 const onboardingQuestion = "What is Northstar's onboarding playbook?";
 const aiQuestion = 'Why is Northstar using Claude Sonnet 4.6?';
+const securityQuestion = "What is Northstar's security policy for customer data?";
+const monorepoQuestion = 'Why did Northstar adopt a monorepo structure?';
 
 const loadingSteps = [
-  'Retrieving captured decision records',
-  'Checking channel, owner, and date metadata',
-  'Preparing sourced intelligence report',
-];
-
-const judgeSignals = [
-  {
-    icon: 'verified_user',
-    title: 'No answer without evidence',
-    detail:
-      'Every response is paired with a visible source block before it is shown.',
-  },
-  {
-    icon: 'rule',
-    title: 'Decision and reasoning are separated',
-    detail:
-      'Judges can see what Northstar decided and why it happened without reading the raw thread first.',
-  },
-  {
-    icon: 'fact_check',
-    title: 'Metadata stays reviewable',
-    detail:
-      'Channel, date, owners, and reference ID remain attached to the answer for quick validation.',
-  },
+  'Searching captured decision records...',
+  'Validating source evidence...',
+  'Preparing intelligence report...',
 ];
 
 const normalizeQuestion = (value: string) =>
@@ -94,15 +75,31 @@ function resolveAskResult(question: string): AskResult {
     return askResponses[aiQuestion];
   }
 
+  if (
+    normalized.includes('security') ||
+    normalized.includes('encryption') ||
+    normalized.includes('pdpa') ||
+    normalized.includes('pii')
+  ) {
+    return askResponses[securityQuestion];
+  }
+
+  if (
+    normalized.includes('monorepo') ||
+    normalized.includes('turborepo')
+  ) {
+    return askResponses[monorepoQuestion];
+  }
+
   return {
     headline: 'No high-confidence decision record was found for that question.',
     answer:
-      `Converge found related discussion inside ${demoCompany.name}'s workspace, but the captured record does not yet show a final high-confidence decision for this topic. In a real workspace, this is the signal that the team needs to formalize the outcome instead of leaving it implicit inside chat.`,
+      `Converge found related discussion inside ${demoCompany.name}'s workspace, but the captured record does not yet show a final high-confidence decision for this topic. This is a signal that the team needs to formalize the outcome so it becomes part of the knowledge base.`,
     decision: 'No definitive decision captured',
     reasoning: [
       'Related discussion exists, but it does not resolve to one explicit operating decision.',
       'The evidence trail is not strong enough to present a sourced answer with high confidence.',
-      'The next step is to formalize the decision in-channel so Converge can preserve it as a reviewable record.',
+      'The next step is to formalize the decision in-channel so Converge can capture it.',
     ],
     topic: 'Needs follow-up',
     sources: [
@@ -116,7 +113,84 @@ function resolveAskResult(question: string): AskResult {
       },
     ],
     confidence: 'medium',
+    followUp: [
+      'Try asking about a specific topic like payments or onboarding',
+      'Browse the Brain Feed to explore captured decisions',
+    ],
   };
+}
+
+function TypewriterText({ text, speed = 12 }: { text: string; speed?: number }) {
+  const [displayedText, setDisplayedText] = useState('');
+  const [isDone, setIsDone] = useState(false);
+
+  useEffect(() => {
+    setDisplayedText('');
+    setIsDone(false);
+    let i = 0;
+    const interval = setInterval(() => {
+      i++;
+      setDisplayedText(text.slice(0, i));
+      if (i >= text.length) {
+        clearInterval(interval);
+        setIsDone(true);
+      }
+    }, speed);
+    return () => clearInterval(interval);
+  }, [text, speed]);
+
+  return (
+    <span>
+      {displayedText}
+      {!isDone && <span className="typing-cursor" />}
+    </span>
+  );
+}
+
+function StepLoader({ onComplete }: { onComplete: () => void }) {
+  const [currentStep, setCurrentStep] = useState(0);
+
+  useEffect(() => {
+    const timers = loadingSteps.map((_, index) =>
+      setTimeout(() => {
+        setCurrentStep(index + 1);
+        if (index === loadingSteps.length - 1) {
+          setTimeout(onComplete, 400);
+        }
+      }, (index + 1) * 600)
+    );
+    return () => timers.forEach(clearTimeout);
+  }, [onComplete]);
+
+  return (
+    <div className="ask-loading">
+      <div className="ask-loading-head">
+        <strong>Searching your knowledge base</strong>
+        <span>
+          Converge is retrieving relevant decisions and assembling a sourced report.
+        </span>
+      </div>
+
+      <div className="ask-loading-steps">
+        {loadingSteps.map((step, index) => (
+          <div
+            key={step}
+            className={`ask-loading-step ${index < currentStep ? 'done' : ''} ${index === currentStep ? 'active' : ''}`}
+          >
+            <MaterialIcon
+              icon={index < currentStep ? 'check_circle' : 'search'}
+              className="ask-loading-step-icon"
+            />
+            <span>{step}</span>
+          </div>
+        ))}
+      </div>
+
+      <div className="ask-loading-progress" aria-hidden="true">
+        <span />
+      </div>
+    </div>
+  );
 }
 
 function AskContent() {
@@ -130,15 +204,15 @@ function AskContent() {
   );
   const [askedQuestion, setAskedQuestion] = useState(initialQuery);
 
-  const handleAsk = async (question: string) => {
+  const handleAsk = (question: string) => {
     setQuery(question);
     setAskedQuestion(question);
     setResult(null);
     setIsLoading(true);
+  };
 
-    await new Promise((resolve) => setTimeout(resolve, 1200));
-
-    setResult(resolveAskResult(question));
+  const handleLoadComplete = () => {
+    setResult(resolveAskResult(askedQuestion));
     setIsLoading(false);
   };
 
@@ -149,7 +223,7 @@ function AskContent() {
       return;
     }
 
-    void handleAsk(query.trim());
+    handleAsk(query.trim());
   };
 
   return (
@@ -158,22 +232,21 @@ function AskContent() {
         <div className="page-header-copy">
           <div className="eyebrow">
             <MaterialIcon icon="search" className="eyebrow-icon" />
-            {demoCompany.name} sourced query
+            {demoCompany.name} knowledge search
           </div>
-          <h1>Ask {demoCompany.shortName}</h1>
+          <h1>Ask your workspace</h1>
           <p>
-            Query captured workspace knowledge and return a decision record that
-            keeps the reasoning, source channel, owners, date, and reference ID
-            visible on one screen. This is the highest-priority flow in the
-            live demo.
+            Search your captured workspace knowledge and get answers with full
+            source tracing — including the reasoning, people, channel, and date
+            behind every decision.
           </p>
         </div>
 
         <div className="header-note">
           <MaterialIcon icon="verified_user" className="header-note-icon" />
           <div>
-            <strong>No answer ships without evidence</strong>
-            <span>Each report keeps the decision, reasoning, and source thread in view</span>
+            <strong>Every answer includes source evidence</strong>
+            <span>Decisions, reasoning, and source threads are always visible</span>
           </div>
         </div>
       </div>
@@ -187,7 +260,7 @@ function AskContent() {
                 id="ask-input"
                 type="text"
                 className="ask-input"
-                placeholder={`Ask why ${demoCompany.shortName} switched payment provider, chose Qdrant, or changed sprint retros`}
+                placeholder="Ask about any decision, person, or topic in the workspace..."
                 value={query}
                 onChange={(event) => setQuery(event.target.value)}
                 autoComplete="off"
@@ -198,7 +271,7 @@ function AskContent() {
                 disabled={!query.trim() || isLoading}
                 aria-label="Run sourced query"
               >
-                <span>Run query</span>
+                <span>Search</span>
                 <MaterialIcon icon="arrow_forward" className="ask-submit-icon" />
               </button>
             </div>
@@ -206,14 +279,14 @@ function AskContent() {
 
           {!result && !isLoading && !askedQuestion && (
             <div className="suggested-section">
-              <div className="suggested-label">Run one of the seeded demo questions</div>
+              <div className="suggested-label">Try one of these questions to get started</div>
               <div className="suggested-grid">
                 {suggestedQuestions.map((question) => (
                   <button
                     key={question}
                     type="button"
                     className="suggested-btn"
-                    onClick={() => void handleAsk(question)}
+                    onClick={() => handleAsk(question)}
                   >
                     <MaterialIcon
                       icon="subdirectory_arrow_right"
@@ -227,31 +300,7 @@ function AskContent() {
           )}
 
           {isLoading && (
-            <div className="ask-loading">
-              <div className="ask-loading-head">
-                <strong>Preparing sourced intelligence report</strong>
-                <span>
-                  Converge is retrieving the decision record, validating the
-                  metadata, and assembling the evidence block.
-                </span>
-              </div>
-
-              <div className="ask-loading-steps">
-                {loadingSteps.map((step) => (
-                  <div key={step} className="ask-loading-step">
-                    <MaterialIcon
-                      icon="check_circle"
-                      className="ask-loading-step-icon"
-                    />
-                    <span>{step}</span>
-                  </div>
-                ))}
-              </div>
-
-              <div className="ask-loading-progress" aria-hidden="true">
-                <span />
-              </div>
-            </div>
+            <StepLoader onComplete={handleLoadComplete} />
           )}
 
           {result && !isLoading && (
@@ -259,7 +308,7 @@ function AskContent() {
               <div className="answer-header">
                 <div className="answer-header-left">
                   <MaterialIcon icon="verified" className="answer-header-icon" />
-                  <span>Sourced intelligence report</span>
+                  <span>Intelligence report</span>
                 </div>
 
                 <div className="answer-header-right">
@@ -271,7 +320,7 @@ function AskContent() {
               </div>
 
               <div className="answer-question">
-                <span className="source-label">Question asked</span>
+                <span className="source-label">Question</span>
                 <p>{askedQuestion}</p>
               </div>
 
@@ -299,16 +348,16 @@ function AskContent() {
 
                 <section className="answer-section">
                   <div className="answer-section-header">
-                    <span className="answer-section-kicker">Direct answer</span>
-                    <h2>{result.headline}</h2>
+                    <span className="answer-section-kicker">Answer</span>
+                    <h2><TypewriterText text={result.headline} speed={15} /></h2>
                   </div>
                   <p className="answer-text">{result.answer}</p>
                 </section>
 
                 <section className="answer-section">
                   <div className="answer-section-header">
-                    <span className="answer-section-kicker">Why this happened</span>
-                    <h2>Reasoning preserved from the source conversation</h2>
+                    <span className="answer-section-kicker">Reasoning</span>
+                    <h2>Why this decision was made</h2>
                   </div>
 
                   <ul className="answer-reasoning-list">
@@ -330,7 +379,7 @@ function AskContent() {
                       <div className="source-top">
                         <div>
                           <div className="source-label">Source evidence</div>
-                          <h3>Captured Slack thread linked to this answer</h3>
+                          <h3>Linked conversation thread</h3>
                         </div>
                         <span className="source-reference">{source.reference}</span>
                       </div>
@@ -363,6 +412,28 @@ function AskContent() {
                     </div>
                   ))}
                 </section>
+
+                {result.followUp && result.followUp.length > 0 && (
+                  <section className="answer-followup">
+                    <div className="answer-section-header">
+                      <span className="answer-section-kicker">Related questions</span>
+                      <h2>Continue exploring</h2>
+                    </div>
+                    <div className="followup-grid">
+                      {result.followUp.map((q) => (
+                        <button
+                          key={q}
+                          type="button"
+                          className="followup-btn"
+                          onClick={() => handleAsk(q)}
+                        >
+                          <MaterialIcon icon="subdirectory_arrow_right" className="followup-btn-icon" />
+                          <span>{q}</span>
+                        </button>
+                      ))}
+                    </div>
+                  </section>
+                )}
               </div>
             </div>
           )}
@@ -371,30 +442,46 @@ function AskContent() {
         <aside className="surface-panel ask-secondary">
           <div className="panel-heading">
             <div>
-              <p className="panel-kicker">Judge view</p>
-              <h2>What this screen proves in under a minute</h2>
+              <p className="panel-kicker">How it works</p>
+              <h2>Understanding sourced answers</h2>
             </div>
-            <MaterialIcon icon="tune" className="panel-heading-icon" />
+            <MaterialIcon icon="lightbulb" className="panel-heading-icon" />
           </div>
 
           <div className="status-list">
-            {judgeSignals.map((item) => (
-              <div key={item.title} className="status-item">
-                <div className="status-item-icon">
-                  <MaterialIcon icon={item.icon} className="status-icon" />
-                </div>
-                <div className="status-item-copy">
-                  <h3>{item.title}</h3>
-                  <p>{item.detail}</p>
-                </div>
+            <div className="status-item">
+              <div className="status-item-icon">
+                <MaterialIcon icon="verified_user" className="status-icon" />
               </div>
-            ))}
+              <div className="status-item-copy">
+                <h3>Evidence-backed answers</h3>
+                <p>Every response includes the source conversation, people involved, and timestamp.</p>
+              </div>
+            </div>
+            <div className="status-item">
+              <div className="status-item-icon">
+                <MaterialIcon icon="rule" className="status-icon" />
+              </div>
+              <div className="status-item-copy">
+                <h3>Decision and reasoning separated</h3>
+                <p>See what was decided and why it happened without reading raw chat threads.</p>
+              </div>
+            </div>
+            <div className="status-item">
+              <div className="status-item-icon">
+                <MaterialIcon icon="fact_check" className="status-icon" />
+              </div>
+              <div className="status-item-copy">
+                <h3>Full traceability</h3>
+                <p>Channel, date, owners, and reference ID remain attached for quick verification.</p>
+              </div>
+            </div>
           </div>
 
           <div className="ask-sidebar-block">
             <div className="ask-sidebar-head">
-              <p className="panel-kicker">Seeded demo prompts</p>
-              <h3>Use these during the presentation</h3>
+              <p className="panel-kicker">Suggested questions</p>
+              <h3>Explore the workspace</h3>
             </div>
 
             <div className="ask-sidebar-questions">
@@ -403,7 +490,7 @@ function AskContent() {
                   key={question}
                   type="button"
                   className="ask-sidebar-question"
-                  onClick={() => void handleAsk(question)}
+                  onClick={() => handleAsk(question)}
                 >
                   <MaterialIcon
                     icon="subdirectory_arrow_right"

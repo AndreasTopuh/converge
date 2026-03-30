@@ -40,6 +40,7 @@ export interface AskResult {
   topic: string;
   confidence: 'high' | 'medium';
   sources: AskSource[];
+  followUp: string[];
 }
 
 export interface AutoDoc {
@@ -48,8 +49,23 @@ export interface AutoDoc {
   description: string;
   generatedDate: string;
   sourceCount: number;
-  status: 'published' | 'draft';
+  status: 'published' | 'draft' | 'review';
   content: string;
+}
+
+export interface TeamMember {
+  name: string;
+  role: string;
+  avatar: string;
+}
+
+export interface ActivityLogEntry {
+  id: string;
+  type: 'decision' | 'doc' | 'sync' | 'query';
+  title: string;
+  detail: string;
+  time: string;
+  icon: string;
 }
 
 export const demoCompany = {
@@ -60,6 +76,27 @@ export const demoCompany = {
   description:
     'A fictional growth-stage Malaysian e-commerce startup used throughout the Converge demo. Its workspace combines payments, engineering, client operations, architecture, and AI research decisions in one searchable system of record.',
 };
+
+export const teamMembers: TeamMember[] = [
+  { name: 'Sherman', role: 'Payments Lead', avatar: 'R' },
+  { name: 'Shafin', role: 'AI / Architecture', avatar: 'S' },
+  { name: 'Andreas', role: 'Engineering Lead', avatar: 'A' },
+  { name: 'Sarah', role: 'Engineering Manager', avatar: 'SA' },
+  { name: 'Priya', role: 'Client Operations', avatar: 'P' },
+  { name: 'Wei Lin', role: 'Security & Compliance', avatar: 'W' },
+  { name: 'Daniel', role: 'Product Manager', avatar: 'D' },
+];
+
+export const channelNames = [
+  '#payments',
+  '#engineering',
+  '#architecture',
+  '#client-ops',
+  '#ai-research',
+  '#security',
+  '#general',
+  '#product',
+];
 
 export const mvpStack = [
   'Slack Events API',
@@ -157,6 +194,68 @@ export const connectionStats = {
 };
 
 // ================================
+// ACTIVITY LOG (for dashboard)
+// ================================
+export const activityLog: ActivityLogEntry[] = [
+  {
+    id: 'a1',
+    type: 'decision',
+    title: 'New decision captured',
+    detail: 'Switched from Stripe to Billplz for Malaysian market',
+    time: '2 min ago',
+    icon: 'check_circle',
+  },
+  {
+    id: 'a2',
+    type: 'sync',
+    title: 'Slack sync completed',
+    detail: '42 new messages ingested from #payments',
+    time: '5 min ago',
+    icon: 'sync',
+  },
+  {
+    id: 'a3',
+    type: 'doc',
+    title: 'Auto Doc updated',
+    detail: 'Payment Provider Selection SOP republished',
+    time: '12 min ago',
+    icon: 'description',
+  },
+  {
+    id: 'a4',
+    type: 'decision',
+    title: 'New decision captured',
+    detail: 'Sprint retrospectives moved to weekly cadence',
+    time: '18 min ago',
+    icon: 'check_circle',
+  },
+  {
+    id: 'a5',
+    type: 'query',
+    title: 'Query answered',
+    detail: '"Why did we switch payment provider?" resolved with high confidence',
+    time: '24 min ago',
+    icon: 'search',
+  },
+  {
+    id: 'a6',
+    type: 'sync',
+    title: 'Slack sync completed',
+    detail: '38 new messages ingested from #engineering',
+    time: '31 min ago',
+    icon: 'sync',
+  },
+  {
+    id: 'a7',
+    type: 'decision',
+    title: 'New decision captured',
+    detail: 'Chose Qdrant over pgvector for knowledge retrieval',
+    time: '45 min ago',
+    icon: 'check_circle',
+  },
+];
+
+// ================================
 // BRAIN FEED
 // ================================
 export const brainFeedItems: BrainFeedItem[] = [
@@ -165,7 +264,7 @@ export const brainFeedItems: BrainFeedItem[] = [
     decision: 'Switched from Stripe to Billplz for the Malaysian market',
     reasoning:
       "Billplz offers stronger local bank integration, lower MYR transaction fees at 1.5% versus Stripe at 3.4%, and FPX direct debit support, which 73% of Northstar's Malaysian users prefer.",
-    people: ['Rizal', 'Shafin'],
+    people: ['Sherman', 'Shafin'],
     channel: '#payments',
     date: '2026-03-25',
     confidence: 'high',
@@ -199,7 +298,7 @@ export const brainFeedItems: BrainFeedItem[] = [
       'Standardized client onboarding to a 5-step playbook with a 48-hour SLA on first contact',
     reasoning:
       'Three client escalations in Q1 traced back to inconsistent onboarding. A structured playbook with assigned owners removes ambiguity and creates an auditable client-facing process.',
-    people: ['Priya', 'Rizal'],
+    people: ['Priya', 'Sherman'],
     channel: '#client-ops',
     date: '2026-03-20',
     confidence: 'high',
@@ -217,6 +316,39 @@ export const brainFeedItems: BrainFeedItem[] = [
     confidence: 'high',
     topic: 'AI Infrastructure',
   },
+  {
+    id: '6',
+    decision: 'Adopted end-to-end encryption for all customer PII stored in Supabase',
+    reasoning:
+      'Malaysian PDPA compliance requires encryption at rest for personal data. The security team benchmarked AES-256 with column-level encryption and confirmed it adds less than 4ms overhead per query.',
+    people: ['Wei Lin', 'Andreas'],
+    channel: '#security',
+    date: '2026-03-17',
+    confidence: 'high',
+    topic: 'Security & Compliance',
+  },
+  {
+    id: '7',
+    decision: 'Committed to a monorepo structure using Turborepo for all frontend services',
+    reasoning:
+      'The team was losing 2-3 hours per week to cross-repo dependency issues. Turborepo consolidates builds, shares configs, and keeps the CI pipeline under 4 minutes for incremental builds.',
+    people: ['Andreas', 'Daniel'],
+    channel: '#engineering',
+    date: '2026-03-15',
+    confidence: 'high',
+    topic: 'Technical Architecture',
+  },
+  {
+    id: '8',
+    decision: 'Launched a freemium tier with a 14-day trial for premium features',
+    reasoning:
+      'Competitive analysis showed that 4 out of 5 comparable SaaS tools in the Malaysian market offer free tiers. Conversion data from beta users suggests a 22% upgrade rate within the first two weeks when premium features are time-limited.',
+    people: ['Daniel', 'Priya'],
+    channel: '#product',
+    date: '2026-03-12',
+    confidence: 'medium',
+    topic: 'Product Strategy',
+  },
 ];
 
 // ================================
@@ -227,6 +359,9 @@ export const suggestedQuestions = [
   'Why did Northstar choose Qdrant?',
   "Who changed Northstar's sprint retrospective cadence?",
   "What is Northstar's onboarding playbook?",
+  'Why is Northstar using Claude Sonnet 4.6?',
+  "What is Northstar's security policy for customer data?",
+  'Why did Northstar adopt a monorepo structure?',
 ];
 
 export const askResponses: Record<string, AskResult> = {
@@ -246,13 +381,18 @@ export const askResponses: Record<string, AskResult> = {
       {
         channel: '#payments',
         date: 'March 25, 2026',
-        people: ['Rizal', 'Shafin'],
+        people: ['Sherman', 'Shafin'],
         reference: 'PAY-2026-03-25-01',
         messagePreview:
           '"Billplz wins on local bank coverage, FPX, and MYR fee economics for the Malaysia launch. We should switch now instead of carrying Stripe into rollout."',
       },
     ],
     confidence: 'high',
+    followUp: [
+      'What are the risks of switching from Stripe?',
+      'Who approved the Billplz migration?',
+      'What is the timeline for the payment migration?',
+    ],
   },
   'Why did Northstar choose Qdrant?': {
     headline:
@@ -277,6 +417,11 @@ export const askResponses: Record<string, AskResult> = {
       },
     ],
     confidence: 'high',
+    followUp: [
+      'What embedding model does Northstar use?',
+      'How is Qdrant deployed in production?',
+      'What is the retrieval latency benchmark?',
+    ],
   },
   "Who changed Northstar's sprint retrospective cadence?": {
     headline:
@@ -301,6 +446,11 @@ export const askResponses: Record<string, AskResult> = {
       },
     ],
     confidence: 'high',
+    followUp: [
+      'Has team velocity improved since the change?',
+      'What is the retro format?',
+      'Who owns the sprint governance playbook?',
+    ],
   },
   "What is Northstar's onboarding playbook?": {
     headline:
@@ -319,13 +469,18 @@ export const askResponses: Record<string, AskResult> = {
       {
         channel: '#client-ops',
         date: 'March 20, 2026',
-        people: ['Priya', 'Rizal'],
+        people: ['Priya', 'Sherman'],
         reference: 'OPS-2026-03-20-03',
         messagePreview:
           '"We need a five-step onboarding flow with named owners and a 48-hour first-response SLA. Too many escalations came from uneven handoffs this quarter."',
       },
     ],
     confidence: 'high',
+    followUp: [
+      'How many clients have been onboarded with the new playbook?',
+      'What is the escalation rate since the change?',
+      'Who owns each step of the onboarding flow?',
+    ],
   },
   'Why is Northstar using Claude Sonnet 4.6?': {
     headline:
@@ -351,6 +506,69 @@ export const askResponses: Record<string, AskResult> = {
       },
     ],
     confidence: 'high',
+    followUp: [
+      'What is the cost per decision extraction?',
+      'How does the dual-model pipeline work?',
+      'What is the accuracy rate for decision extraction?',
+    ],
+  },
+  "What is Northstar's security policy for customer data?": {
+    headline:
+      'Northstar adopted end-to-end encryption with AES-256 for all customer PII stored in Supabase to comply with Malaysian PDPA requirements.',
+    answer:
+      'The security team implemented column-level AES-256 encryption for all personally identifiable information after a compliance review flagged gaps in the existing data handling process. The decision was driven by Malaysian PDPA requirements and adds less than 4ms overhead per query.',
+    decision: 'Adopted end-to-end encryption for all customer PII stored in Supabase',
+    reasoning: [
+      'Malaysian PDPA compliance requires encryption at rest for personal data.',
+      'AES-256 with column-level encryption was benchmarked at less than 4ms overhead per query.',
+      'The security team confirmed this meets both regulatory and performance requirements.',
+    ],
+    topic: 'Security & Compliance',
+    sources: [
+      {
+        channel: '#security',
+        date: 'March 17, 2026',
+        people: ['Wei Lin', 'Andreas'],
+        reference: 'SEC-2026-03-17-01',
+        messagePreview:
+          '"Column-level AES-256 is the right approach. We benchmarked the overhead at under 4ms per query, and it satisfies PDPA requirements for PII at rest."',
+      },
+    ],
+    confidence: 'high',
+    followUp: [
+      'What data is classified as PII?',
+      'How are encryption keys managed?',
+      'When is the next compliance audit?',
+    ],
+  },
+  'Why did Northstar adopt a monorepo structure?': {
+    headline:
+      'Northstar adopted Turborepo to eliminate 2-3 hours of weekly cross-repo dependency overhead and keep CI builds under 4 minutes.',
+    answer:
+      'The engineering team was losing significant time to cross-repository dependency management and inconsistent build configurations. After evaluating Nx and Turborepo, the team chose Turborepo for its simplicity, faster incremental builds, and better integration with the existing Vercel deployment pipeline.',
+    decision: 'Committed to a monorepo structure using Turborepo for all frontend services',
+    reasoning: [
+      'Cross-repo dependency issues cost 2-3 hours per week in developer time.',
+      'Turborepo consolidates builds and shares configurations across packages.',
+      'Incremental CI builds stay under 4 minutes, matching the team target.',
+    ],
+    topic: 'Technical Architecture',
+    sources: [
+      {
+        channel: '#engineering',
+        date: 'March 15, 2026',
+        people: ['Andreas', 'Daniel'],
+        reference: 'ENG-2026-03-15-02',
+        messagePreview:
+          '"Turborepo is the right fit. Nx has more features, but Turborepo is simpler for our scale and plays well with Vercel. Incremental builds are under 4 minutes."',
+      },
+    ],
+    confidence: 'high',
+    followUp: [
+      'How many packages are in the monorepo?',
+      'What was the migration timeline?',
+      'How does this affect deployment workflow?',
+    ],
   },
 };
 
@@ -394,7 +612,7 @@ Northstar selected Billplz over Stripe for the Malaysian rollout because it prov
 - Re-evaluate only if fee structure, failure rate, or local support quality changes materially
 
 ## 6. Source trace
-Decision captured in #payments on March 25, 2026 by Rizal and Shafin.`,
+Decision captured in #payments on March 25, 2026 by Sherman and Shafin.`,
   },
   {
     id: '2',
@@ -461,6 +679,80 @@ Three client escalations in Q1 were linked to inconsistent onboarding handoffs. 
 - Changes to the playbook require an explicit decision record in Converge
 
 ## 6. Source trace
-Decision captured in #client-ops on March 20, 2026 by Priya and Rizal.`,
+Decision captured in #client-ops on March 20, 2026 by Priya and Sherman.`,
+  },
+  {
+    id: '4',
+    title: 'AI Reasoning Pipeline Architecture',
+    description:
+      'Technical architecture document covering the dual-model pipeline using Claude Sonnet 4.6 for reasoning and Gemini Flash for classification.',
+    generatedDate: '2026-03-18',
+    sourceCount: 11,
+    status: 'published',
+    content: `## 1. Architecture overview
+Northstar uses a dual-model AI pipeline that separates fast classification from deep reasoning extraction.
+
+## 2. Model assignments
+| Stage | Model | Purpose | Avg latency |
+|-------|-------|---------|-------------|
+| Classification | Gemini 2.0 Flash | Noise filtering, topic tagging, priority scoring | 120ms |
+| Reasoning extraction | Claude Sonnet 4.6 | Decision detection, subtext analysis, rationale capture | 1.8s |
+| Embedding | Gemini text-embedding-004 | Semantic search indexing | 90ms |
+
+## 3. Pipeline flow
+1. Raw Slack messages ingested via Socket Mode
+2. BullMQ queues messages for async processing
+3. Gemini Flash classifies: noise, discussion, or potential decision
+4. Decision candidates routed to Claude Sonnet 4.6
+5. Extracted decisions stored in Supabase with Qdrant embeddings
+
+## 4. Why this split matters
+- Claude captures implied decisions where teams reach consensus without explicitly saying the words
+- Gemini Flash keeps classification costs under $0.002 per message
+- The split allows the team to upgrade either model independently
+
+## 5. Performance benchmarks
+- Classification accuracy: 94.2% on test set
+- Decision detection recall: 91.8%
+- False positive rate: 3.1%
+- End-to-end pipeline latency: under 3 seconds
+
+## 6. Source trace
+Decision captured in #ai-research on March 18, 2026 by Shafin and Andreas.`,
+  },
+  {
+    id: '5',
+    title: 'Data Security and PDPA Compliance Policy',
+    description:
+      'Security policy document covering encryption standards, PII handling, and Malaysian PDPA compliance requirements.',
+    generatedDate: '2026-03-17',
+    sourceCount: 7,
+    status: 'review',
+    content: `## 1. Policy scope
+This policy covers all customer personally identifiable information (PII) processed and stored by Northstar Commerce systems.
+
+## 2. Encryption standard
+**Algorithm:** AES-256 with column-level encryption
+**Scope:** All PII fields in Supabase including name, email, phone, address, and payment identifiers
+
+## 3. Compliance requirements
+- Malaysian Personal Data Protection Act (PDPA) 2010
+- Data must be encrypted at rest and in transit
+- Access logs must be retained for 12 months minimum
+- Data breach notification within 72 hours
+
+## 4. Access control
+- Role-based access control (RBAC) enforced at database level
+- PII access limited to authorized personnel only
+- All access events logged and auditable
+- Quarterly access reviews conducted by security lead
+
+## 5. Performance impact
+- Column-level encryption adds less than 4ms per query
+- No measurable impact on user-facing response times
+- Encryption key rotation scheduled quarterly
+
+## 6. Source trace
+Decision captured in #security on March 17, 2026 by Wei Lin and Andreas.`,
   },
 ];

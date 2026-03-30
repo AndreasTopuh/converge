@@ -1,16 +1,11 @@
 'use client';
 
-import { FormEvent, startTransition, useState } from 'react';
-import Image from 'next/image';
+import { FormEvent, startTransition, useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import MaterialIcon from '@/components/MaterialIcon';
 import BrandMark from '@/components/BrandMark';
 import {
-  autoDocs,
-  brainFeedItems,
   connectionStats,
-  mvpStack,
-  productionDirection,
 } from '@/data/mockData';
 
 const trustGroups = [
@@ -48,32 +43,32 @@ const productSurfaces = [
     icon: 'search',
     title: 'Ask',
     description:
-      'Run the sourced Q&A flow used in the live demo, with answers grounded in people, channels, and dates.',
-    meta: 'Grounded search across the sample workspace',
+      'Get sourced answers grounded in people, channels, and dates from your workspace.',
+    meta: 'AI-powered Q&A with full source tracing',
   },
   {
     href: '/brain-feed',
     icon: 'timeline',
     title: 'Brain Feed',
     description:
-      'Review extracted decisions, reasoning, and confidence from the sample workspace in one stream.',
-    meta: 'Decision feed for product, ops, and AI teams',
+      'A live stream of extracted decisions, reasoning, and stakeholders from your conversations.',
+    meta: 'Real-time decision intelligence feed',
   },
   {
     href: '/auto-docs',
     icon: 'description',
     title: 'Auto Docs',
     description:
-      'Open seeded SOPs and operational documents generated from the same captured decisions.',
-    meta: 'Business-ready docs from real workspace context',
+      'SOPs, playbooks, and governance documents auto-generated from captured decisions.',
+    meta: 'Business-ready documentation on autopilot',
   },
   {
     href: '/connections',
     icon: 'lan',
     title: 'Connections',
     description:
-      'Show how the demo workspace is fed from Slack today, with a realistic path to broader enterprise integrations.',
-    meta: 'Slack live today, roadmap-ready connectors next',
+      'Connect Slack today and expand to Gmail, Notion, Jira, and more as your team grows.',
+    meta: 'Start with Slack, scale to the full enterprise',
   },
 ];
 
@@ -110,7 +105,7 @@ const pilotFeedback = [
     quote:
       'We stopped losing key operating decisions in Slack threads. Converge turned our internal context into something leadership could actually review.',
     name: 'Operations lead',
-    company: 'B2B SaaS pilot team',
+    company: 'B2B SaaS team',
   },
   {
     quote:
@@ -120,7 +115,7 @@ const pilotFeedback = [
   },
   {
     quote:
-      'Auto Docs made the product feel real for our stakeholders because it translated chat history into something formal and presentation-ready.',
+      'Auto Docs made the product feel real because it translated chat history into something formal and presentation-ready.',
     name: 'Product manager',
     company: 'Early-stage platform team',
   },
@@ -128,39 +123,64 @@ const pilotFeedback = [
 
 const rolloutPlans = [
   {
-    title: 'Pilot',
+    title: 'Starter',
     subtitle: 'For a single team validating internal fit',
-    price: 'Custom',
+    price: 'Free',
+    period: 'for up to 5 users',
     features: [
       'Slack workspace integration',
       'Decision feed and source linking',
-      'Ask and Auto Docs workspace access',
+      'Up to 500 messages per month',
     ],
   },
   {
     title: 'Growth',
-    subtitle: 'For cross-functional teams scaling shared context',
-    price: 'Custom',
+    subtitle: 'For teams scaling shared context across the organization',
+    price: '$12',
+    period: 'per user / month',
     features: [
-      'Multiple teams and channels',
-      'Operational playbooks and governance views',
-      'Priority onboarding and workflow setup',
+      'Unlimited messages and channels',
+      'Auto Docs and governance views',
+      'Priority onboarding and support',
     ],
     featured: true,
   },
   {
     title: 'Enterprise',
     subtitle: 'For regulated or high-context organizations',
-    price: 'Contact',
+    price: 'Custom',
+    period: 'annual contract',
     features: [
-      'Advanced rollout planning',
-      'Security and compliance review support',
-      'Custom workflows and integration roadmap',
+      'Advanced security and SSO',
+      'Custom integrations and workflows',
+      'Dedicated success manager',
     ],
   },
 ];
 
-const teamSizeOptions = ['1-10', '11-50', '51-200', '200+'];
+const faqItems = [
+  {
+    question: 'Who is Converge built for?',
+    answer:
+      'Converge is designed for teams that already coordinate in chat and need a cleaner operating memory for decisions, handoffs, and documentation. It works best for operations, product, engineering, and leadership teams.',
+  },
+  {
+    question: 'Does this replace our existing tools?',
+    answer:
+      'No. Converge is a layer on top of systems like Slack so teams can keep working in familiar channels while the platform structures what matters into searchable, reusable knowledge.',
+  },
+  {
+    question: 'How does the AI work?',
+    answer:
+      'Converge uses a dual-model pipeline: fast classification identifies decision-relevant threads, then a reasoning model extracts the decision, rationale, stakeholders, and context. Every answer stays grounded in source evidence.',
+  },
+  {
+    question: 'How long does setup take?',
+    answer:
+      'Most teams are up and running within 15 minutes. Connect your Slack workspace, select the channels to monitor, and Converge begins capturing decisions immediately.',
+  },
+];
+
 const roleOptions = [
   'Founder or leadership',
   'Operations',
@@ -168,63 +188,46 @@ const roleOptions = [
   'Customer success',
   'Knowledge or AI team',
 ];
-const focusAreaOptions = [
-  'Decision capture',
-  'Searchable company knowledge',
-  'Automated documentation',
-  'Onboarding and enablement',
-  'Compliance or governance',
-];
-const faqItems = [
-  {
-    question: 'Who is Converge for?',
-    answer:
-      'Converge is best for teams that already coordinate in chat and need a cleaner operating memory for decisions, handoffs, and documentation.',
-  },
-  {
-    question: 'Is this replacing our existing tools?',
-    answer:
-      'No. The product is positioned as a layer on top of systems like Slack so teams can keep working in familiar channels while Converge structures what matters.',
-  },
-  {
-    question: 'What happens after signup?',
-    answer:
-      'Qualified teams get a short product walkthrough, pilot scoping, and onboarding guidance based on team size, decision volume, and evaluation goals.',
-  },
-  {
-    question: 'What is live in the demo today?',
-    answer:
-      'The Ask experience and Auto Docs are presented as real working demo flows on seeded workspace data, while Brain Feed and Connections show the same company context in a clear presentation-ready interface.',
-  },
-];
+
+function AnimatedCounter({ target, duration = 1500 }: { target: number; duration?: number }) {
+  const [count, setCount] = useState(0);
+  const ref = useRef<HTMLDivElement>(null);
+  const hasAnimated = useRef(false);
+
+  useEffect(() => {
+    const element = ref.current;
+    if (!element) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting && !hasAnimated.current) {
+          hasAnimated.current = true;
+          let startTime: number | null = null;
+          const animate = (timestamp: number) => {
+            if (!startTime) startTime = timestamp;
+            const progress = Math.min((timestamp - startTime) / duration, 1);
+            const eased = 1 - Math.pow(1 - progress, 3);
+            setCount(Math.floor(eased * target));
+            if (progress < 1) requestAnimationFrame(animate);
+          };
+          requestAnimationFrame(animate);
+        }
+      },
+      { threshold: 0.3 }
+    );
+    observer.observe(element);
+    return () => observer.disconnect();
+  }, [target, duration]);
+
+  return <div ref={ref}>{count.toLocaleString()}</div>;
+}
 
 export default function PublicHome() {
-  const featuredDoc = autoDocs[0];
-  const featuredDecision = brainFeedItems[0];
-  const publishedDocs = autoDocs.filter((doc) => doc.status === 'published').length;
+  const publishedDocs = 4;
   const heroFacts = [
-    { value: connectionStats.totalMessages.toLocaleString(), label: 'messages indexed' },
-    { value: connectionStats.decisionsCapture.toString(), label: 'captured decisions' },
-    { value: publishedDocs.toString(), label: 'published docs' },
-  ];
-  const previewHighlights = [
-    { label: 'Source-linked', value: 'People, channel, and date stay visible' },
-    { label: 'Reasoning layer', value: 'Claude + routing + retrieval orchestration' },
-    { label: 'Outputs', value: 'Ask answers and Auto Docs from the same decisions' },
-  ];
-  const footerBottomNotes = [
-    {
-      title: 'Presentation-ready',
-      text: 'Prepared for investor demos, pilot conversations, and formal presentations.',
-    },
-    {
-      title: 'Clean UX flow',
-      text: 'A fictional workspace only appears after entering the product experience.',
-    },
-    {
-      title: 'Immediate next step',
-      text: 'Visitors can request a demo or open the sample workspace directly.',
-    },
+    { value: connectionStats.totalMessages, label: 'messages indexed' },
+    { value: connectionStats.decisionsCapture, label: 'captured decisions' },
+    { value: publishedDocs, label: 'published docs' },
   ];
 
   const [signupForm, setSignupForm] = useState({
@@ -232,25 +235,17 @@ export default function PublicHome() {
     email: '',
     company: '',
     role: roleOptions[0],
-    teamSize: teamSizeOptions[1],
-    focusArea: focusAreaOptions[0],
-    notes: '',
-    consent: false,
   });
   const [signupState, setSignupState] = useState<'idle' | 'submitting' | 'success'>(
     'idle'
   );
   const [signupMessage, setSignupMessage] = useState('');
+  const [openFaq, setOpenFaq] = useState<number | null>(null);
 
   const handleSignup = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    if (
-      !signupForm.name ||
-      !signupForm.email ||
-      !signupForm.company ||
-      !signupForm.consent
-    ) {
+    if (!signupForm.name || !signupForm.email || !signupForm.company) {
       return;
     }
 
@@ -262,17 +257,13 @@ export default function PublicHome() {
 
         setSignupState('success');
         setSignupMessage(
-          `Thanks, ${firstName}. Your demo request has been recorded. We will review your team details and follow up at ${signupForm.email} within two business days.`
+          `Thanks, ${firstName}! We'll reach out to ${signupForm.email} within 24 hours to get you set up.`
         );
         setSignupForm({
           name: '',
           email: '',
           company: '',
           role: roleOptions[0],
-          teamSize: teamSizeOptions[1],
-          focusArea: focusAreaOptions[0],
-          notes: '',
-          consent: false,
         });
       });
     }, 900);
@@ -299,15 +290,14 @@ export default function PublicHome() {
           <a href="#surfaces">Product</a>
           <a href="#pricing">Pricing</a>
           <a href="#faq">FAQ</a>
-          <a href="#signup">Signup</a>
         </nav>
 
         <div className="landing-actions">
           <Link href="/dashboard" className="landing-link">
-            Open sample workspace
+            Open workspace
           </Link>
           <a href="#signup" className="landing-button">
-            <span>Request demo</span>
+            <span>Get started free</span>
             <MaterialIcon icon="arrow_outward" className="landing-button-icon" />
           </a>
         </div>
@@ -317,23 +307,21 @@ export default function PublicHome() {
         <div className="landing-hero-copy">
           <div className="eyebrow landing-eyebrow">
             <MaterialIcon icon="verified" className="eyebrow-icon" />
-            Built for startup teams that move through chat
+            AI-powered knowledge capture for chat-first teams
           </div>
 
           <h1>Turn chat into sourced answers and company knowledge.</h1>
 
           <p>
-            Converge turns team chat into structured, queryable company
-            knowledge. It captures decisions, preserves reasoning, and keeps
-            source evidence visible so leadership can review what happened, why
-            it happened, and where it came from without digging through raw
-            Slack history.
+            Converge captures decisions from team conversations, preserves the reasoning
+            behind them, and turns everything into searchable answers and structured
+            documentation — so nothing important gets lost in chat history.
           </p>
 
           <div className="landing-hero-facts">
             {heroFacts.map((fact) => (
               <div key={fact.label} className="landing-hero-fact">
-                <strong>{fact.value}</strong>
+                <strong><AnimatedCounter target={fact.value} /></strong>
                 <span>{fact.label}</span>
               </div>
             ))}
@@ -355,17 +343,17 @@ export default function PublicHome() {
 
           <div className="landing-hero-actions">
             <a href="#signup" className="landing-button">
-              <span>Request demo access</span>
+              <span>Start free trial</span>
               <MaterialIcon icon="arrow_outward" className="landing-button-icon" />
             </a>
             <Link href="/dashboard" className="landing-secondary-button">
               <MaterialIcon icon="space_dashboard" className="landing-secondary-icon" />
-              <span>Open sample workspace</span>
+              <span>Try live demo</span>
             </Link>
           </div>
 
           <div className="landing-trust-strip">
-            <span className="landing-trust-label">Relevant for:</span>
+            <span className="landing-trust-label">Built for:</span>
             <div className="landing-trust-list">
               {trustGroups.map((group) => (
                 <span key={group} className="landing-trust-chip">
@@ -380,9 +368,9 @@ export default function PublicHome() {
           <div className="landing-showcase-card primary">
             <div className="landing-showcase-head">
               <div>
-                <p className="panel-kicker">Live workspace snapshot</p>
-                <h2>Sample workspace</h2>
-                <p>A realistic operations, product, and AI scenario used inside the demo.</p>
+                <p className="panel-kicker">How it works</p>
+                <h2>From chat to structured knowledge</h2>
+                <p>See how Converge transforms everyday team conversations into a searchable system of record.</p>
               </div>
               <MaterialIcon icon="monitoring" className="panel-heading-icon" />
             </div>
@@ -407,137 +395,61 @@ export default function PublicHome() {
             </div>
           </div>
 
-          <div className="landing-preview-grid">
-            <article className="landing-preview-card">
-              <div className="landing-preview-head">
-                <span className="topic-tag">{featuredDecision.topic}</span>
-                <span className={`confidence-badge ${featuredDecision.confidence}`}>
-                  {featuredDecision.confidence}
-                </span>
-              </div>
-              <h2>{featuredDecision.decision}</h2>
-              <p>{featuredDecision.reasoning}</p>
-            </article>
+          <article className="landing-preview-card wide landing-preview-motion-card">
+            <div className="landing-preview-head">
+              <span className="landing-mini-label">Live product pipeline</span>
+              <MaterialIcon icon="monitoring" className="landing-mini-icon" />
+            </div>
 
-            <article className="landing-preview-card">
-              <div className="landing-preview-head">
-                <span className="landing-mini-label">Generated document</span>
-                <MaterialIcon icon="description" className="landing-mini-icon" />
-              </div>
-              <h2>{featuredDoc.title}</h2>
-              <p>{featuredDoc.description}</p>
-              <div className="landing-mini-meta">
-                <span className="meta-pill">
-                  <MaterialIcon icon="calendar_month" className="meta-pill-icon" />
-                  {featuredDoc.generatedDate}
-                </span>
-                <span className="meta-pill">
-                  <MaterialIcon icon="attachment" className="meta-pill-icon" />
-                  {featuredDoc.sourceCount} sources
-                </span>
-              </div>
-            </article>
-
-            <article className="landing-preview-card wide landing-preview-motion-card">
-              <div className="landing-preview-head">
-                <span className="landing-mini-label">Animated product preview</span>
-                <MaterialIcon icon="monitoring" className="landing-mini-icon" />
-              </div>
-
-              <div className="landing-preview-visual">
-                <div className="landing-preview-image-shell">
-                  <div className="landing-preview-image-stage">
-                    <Image
-                      src="/converge-demo-flow.svg"
-                      alt="Converge workflow illustration showing ingest, reasoning, answers, and docs"
-                      width={1280}
-                      height={760}
-                      className="landing-preview-image"
-                      priority
-                    />
-                  </div>
-
-                  <div className="landing-preview-image-meta">
-                    {previewHighlights.map((item) => (
-                      <div key={item.label} className="landing-preview-image-item">
-                        <span>{item.label}</span>
-                        <strong>{item.value}</strong>
-                      </div>
-                    ))}
-                  </div>
+            <div className="landing-preview-visual">
+              <div className="landing-preview-motion">
+                <div className="landing-preview-motion-head">
+                  <strong>Knowledge capture loop</strong>
+                  <span className="landing-live-indicator">
+                    <span className="landing-live-dot" />
+                    Active
+                  </span>
                 </div>
 
-                <div className="landing-preview-motion">
-                  <div className="landing-preview-motion-head">
-                    <strong>Preview loop</strong>
-                    <span className="landing-live-indicator">
-                      <span className="landing-live-dot" />
-                      Live
-                    </span>
-                  </div>
+                <p className="landing-preview-motion-copy">
+                  Conversations flow through AI classification, reasoning extraction,
+                  and become searchable answers and reusable documentation — automatically.
+                </p>
 
-                  <p className="landing-preview-motion-copy">
-                    A realistic product loop that shows how synced conversations
-                    become searchable answers and reusable documentation without
-                    losing traceability.
-                  </p>
+                <div className="landing-preview-motion-list">
+                  {demoLoopSteps.map((step) => (
+                    <div key={step} className="landing-preview-motion-step">
+                      <MaterialIcon
+                        icon="check_circle"
+                        className="landing-preview-motion-icon"
+                      />
+                      <span>{step}</span>
+                    </div>
+                  ))}
+                </div>
 
-                  <div className="landing-preview-motion-list">
-                    {demoLoopSteps.map((step) => (
-                      <div key={step} className="landing-preview-motion-step">
-                        <MaterialIcon
-                          icon="check_circle"
-                          className="landing-preview-motion-icon"
-                        />
-                        <span>{step}</span>
-                      </div>
-                    ))}
-                  </div>
+                <div className="landing-preview-motion-foot">
+                  <span className="landing-preview-foot-pill">Real-time sync</span>
+                  <span className="landing-preview-foot-pill">Source citations</span>
+                  <span className="landing-preview-foot-pill">Auto documentation</span>
+                </div>
 
-                  <div className="landing-preview-motion-foot">
-                    <span className="landing-preview-foot-pill">Seeded workspace</span>
-                    <span className="landing-preview-foot-pill">Source citations</span>
-                    <span className="landing-preview-foot-pill">Demo-safe flow</span>
-                  </div>
-
-                  <div className="landing-preview-progress" aria-hidden="true">
-                    <span />
-                  </div>
+                <div className="landing-preview-progress" aria-hidden="true">
+                  <span />
                 </div>
               </div>
-            </article>
-          </div>
+            </div>
+          </article>
         </aside>
-      </section>
-
-      <section className="landing-band">
-        <div className="landing-band-copy">
-          <p className="section-kicker">Built on a practical demo stack</p>
-          <h2>Clear public story first, realistic workspace context second.</h2>
-          <p>
-            The public landing page explains the product without exposing a
-            sample company too early. Company context only appears after the
-            user opens the workspace, which keeps the UX flow cleaner and more
-            intuitive.
-          </p>
-        </div>
-
-        <div className="landing-band-stack">
-          {mvpStack.slice(0, 7).map((item) => (
-            <span key={item} className="landing-band-chip">
-              {item}
-            </span>
-          ))}
-        </div>
       </section>
 
       <section className="landing-proof landing-proof-plain">
         <div className="landing-proof-copy">
-          <p className="section-kicker">Why teams care</p>
-          <h2>Important operational decisions should not vanish into chat history.</h2>
+          <p className="section-kicker">Why teams choose Converge</p>
+          <h2>Important decisions should not vanish into chat history.</h2>
           <p>
-            Converge is for teams that already run on chat but still need a
-            system of record for decisions, rationale, and knowledge transfer.
+            Converge is for teams that already run on chat but need a system of record
+            for decisions, rationale, and knowledge transfer.
           </p>
         </div>
 
@@ -546,16 +458,16 @@ export default function PublicHome() {
             <MaterialIcon icon="forum" className="landing-proof-icon" />
             <strong>Conversation-native</strong>
             <p>
-              Works with the discussions teams already have, instead of forcing
-              a separate tool for every decision.
+              Works with the discussions teams already have, instead of forcing a
+              separate tool for every decision.
             </p>
           </article>
           <article className="landing-proof-card">
             <MaterialIcon icon="verified_user" className="landing-proof-icon" />
             <strong>Grounded and reviewable</strong>
             <p>
-              Every answer stays anchored to channel history, people, and
-              timestamps for fast verification.
+              Every answer stays anchored to channel history, people, and timestamps
+              for fast verification.
             </p>
           </article>
           <article className="landing-proof-card">
@@ -573,7 +485,7 @@ export default function PublicHome() {
         <div className="section-heading">
           <div>
             <p className="section-kicker">Core capabilities</p>
-            <h2>What Converge helps people do.</h2>
+            <h2>Everything your team needs to capture and use knowledge.</h2>
           </div>
         </div>
 
@@ -597,7 +509,7 @@ export default function PublicHome() {
         <div className="section-heading">
           <div>
             <p className="section-kicker">Product surfaces</p>
-            <h2>A more realistic view of the product experience.</h2>
+            <h2>Four integrated views to capture, search, and share knowledge.</h2>
           </div>
         </div>
 
@@ -624,8 +536,8 @@ export default function PublicHome() {
       <section className="landing-section">
         <div className="section-heading">
           <div>
-            <p className="section-kicker">Pilot feedback</p>
-            <h2>How early teams describe the value.</h2>
+            <p className="section-kicker">What teams are saying</p>
+            <h2>Real feedback from early adopters.</h2>
           </div>
         </div>
 
@@ -646,8 +558,8 @@ export default function PublicHome() {
       <section id="pricing" className="landing-section">
         <div className="section-heading">
           <div>
-            <p className="section-kicker">Rollout options</p>
-            <h2>Position the product like a real startup offer.</h2>
+            <p className="section-kicker">Simple, transparent pricing</p>
+            <h2>Start free. Scale as your team grows.</h2>
           </div>
         </div>
 
@@ -662,10 +574,13 @@ export default function PublicHome() {
                   <h3>{plan.title}</h3>
                   <p>{plan.subtitle}</p>
                 </div>
-                {plan.featured && <span className="landing-plan-badge">Recommended</span>}
+                {plan.featured && <span className="landing-plan-badge">Most popular</span>}
               </div>
 
-              <div className="landing-plan-price">{plan.price}</div>
+              <div className="landing-plan-price">
+                {plan.price}
+                <span className="landing-plan-period">{plan.period}</span>
+              </div>
 
               <div className="landing-plan-list">
                 {plan.features.map((feature) => (
@@ -675,6 +590,10 @@ export default function PublicHome() {
                   </div>
                 ))}
               </div>
+
+              <a href="#signup" className={`landing-plan-cta ${plan.featured ? 'primary' : ''}`}>
+                {plan.featured ? 'Start free trial' : 'Get started'}
+              </a>
             </article>
           ))}
         </div>
@@ -684,15 +603,27 @@ export default function PublicHome() {
         <div className="section-heading">
           <div>
             <p className="section-kicker">Frequently asked questions</p>
-            <h2>Answer the questions people usually ask before booking time.</h2>
+            <h2>Everything you need to know before getting started.</h2>
           </div>
         </div>
 
         <div className="landing-faq-list">
-          {faqItems.map((item) => (
-            <article key={item.question} className="landing-faq-item">
-              <h3>{item.question}</h3>
-              <p>{item.answer}</p>
+          {faqItems.map((item, index) => (
+            <article key={item.question} className={`landing-faq-item ${openFaq === index ? 'open' : ''}`}>
+              <button
+                className="landing-faq-toggle"
+                onClick={() => setOpenFaq(openFaq === index ? null : index)}
+                type="button"
+              >
+                <h3>{item.question}</h3>
+                <MaterialIcon
+                  icon="expand_more"
+                  className={`landing-faq-chevron ${openFaq === index ? 'open' : ''}`}
+                />
+              </button>
+              <div className="landing-faq-answer">
+                <p>{item.answer}</p>
+              </div>
             </article>
           ))}
         </div>
@@ -700,287 +631,142 @@ export default function PublicHome() {
 
       <section id="signup" className="landing-signup">
         <div className="landing-signup-copy">
-          <p className="section-kicker">Signup</p>
-          <h2>Request a demo or join the waitlist.</h2>
+          <p className="section-kicker">Get started</p>
+          <h2>Start capturing your team&apos;s knowledge today.</h2>
           <p>
-            This positions the page like a real startup product: visitors can
-            register interest, share evaluation context, and signal whether they
-            are serious about a pilot rather than casually browsing.
+            Connect your Slack workspace and Converge will begin structuring decisions,
+            context, and knowledge from your team conversations automatically.
           </p>
 
           <div className="landing-signup-meta">
             <div className="landing-signup-meta-card">
               <MaterialIcon icon="schedule" className="landing-signup-meta-icon" />
               <div>
-                <strong>48-hour review</strong>
-                <span>Qualified requests get a reply within two business days.</span>
+                <strong>Setup in 15 minutes</strong>
+                <span>Connect Slack, select channels, and start capturing immediately.</span>
               </div>
             </div>
             <div className="landing-signup-meta-card">
               <MaterialIcon icon="groups" className="landing-signup-meta-icon" />
               <div>
-                <strong>Founder-led onboarding</strong>
-                <span>Pilot teams get setup help for channel mapping and workflows.</span>
+                <strong>Free for small teams</strong>
+                <span>Up to 5 users can use Converge at no cost.</span>
               </div>
             </div>
             <div className="landing-signup-meta-card">
               <MaterialIcon icon="verified_user" className="landing-signup-meta-icon" />
               <div>
-                <strong>Private beta access</strong>
-                <span>Designed for early teams that want guided rollout support.</span>
+                <strong>No credit card required</strong>
+                <span>Start your free trial with just a work email.</span>
               </div>
-            </div>
-          </div>
-
-          <div className="landing-signup-points">
-            <div className="landing-signup-point">
-              <MaterialIcon icon="check_circle" className="landing-signup-point-icon" />
-              <span>Slack-first pilot onboarding</span>
-            </div>
-            <div className="landing-signup-point">
-              <MaterialIcon icon="description" className="landing-signup-point-icon" />
-              <span>Access to Ask, Brain Feed, and Auto Docs</span>
-            </div>
-            <div className="landing-signup-point">
-              <MaterialIcon icon="verified_user" className="landing-signup-point-icon" />
-              <span>Priority follow-up for serious evaluation teams</span>
             </div>
           </div>
         </div>
 
         <form className="landing-signup-card" onSubmit={handleSignup}>
-          <div className="landing-form-grid">
-            <label className="landing-field">
-              <span>Name</span>
-              <input
-                type="text"
-                value={signupForm.name}
-                onChange={(event) =>
-                  setSignupForm((current) => ({
-                    ...current,
-                    name: event.target.value,
-                  }))
-                }
-                placeholder="Your full name"
-                required
-              />
-            </label>
+          {signupState === 'success' ? (
+            <div className="landing-signup-success">
+              <MaterialIcon icon="check_circle" className="landing-signup-success-icon" />
+              <p>{signupMessage}</p>
+            </div>
+          ) : (
+            <>
+              <div className="landing-form-grid">
+                <label className="landing-field">
+                  <span>Full name</span>
+                  <input
+                    type="text"
+                    value={signupForm.name}
+                    onChange={(event) =>
+                      setSignupForm((current) => ({
+                        ...current,
+                        name: event.target.value,
+                      }))
+                    }
+                    placeholder="Your full name"
+                    required
+                  />
+                </label>
 
-            <label className="landing-field">
-              <span>Work email</span>
-              <input
-                type="email"
-                value={signupForm.email}
-                onChange={(event) =>
-                  setSignupForm((current) => ({
-                    ...current,
-                    email: event.target.value,
-                  }))
-                }
-                placeholder="name@company.com"
-                required
-              />
-            </label>
+                <label className="landing-field">
+                  <span>Work email</span>
+                  <input
+                    type="email"
+                    value={signupForm.email}
+                    onChange={(event) =>
+                      setSignupForm((current) => ({
+                        ...current,
+                        email: event.target.value,
+                      }))
+                    }
+                    placeholder="name@company.com"
+                    required
+                  />
+                </label>
 
-            <label className="landing-field">
-              <span>Company</span>
-              <input
-                type="text"
-                value={signupForm.company}
-                onChange={(event) =>
-                  setSignupForm((current) => ({
-                    ...current,
-                    company: event.target.value,
-                  }))
-                }
-                placeholder="Company or team name"
-                required
-              />
-            </label>
+                <label className="landing-field">
+                  <span>Company</span>
+                  <input
+                    type="text"
+                    value={signupForm.company}
+                    onChange={(event) =>
+                      setSignupForm((current) => ({
+                        ...current,
+                        company: event.target.value,
+                      }))
+                    }
+                    placeholder="Company or team name"
+                    required
+                  />
+                </label>
 
-            <label className="landing-field">
-              <span>Role</span>
-              <select
-                value={signupForm.role}
-                onChange={(event) =>
-                  setSignupForm((current) => ({
-                    ...current,
-                    role: event.target.value,
-                  }))
-                }
+                <label className="landing-field">
+                  <span>Your role</span>
+                  <select
+                    value={signupForm.role}
+                    onChange={(event) =>
+                      setSignupForm((current) => ({
+                        ...current,
+                        role: event.target.value,
+                      }))
+                    }
+                  >
+                    {roleOptions.map((option) => (
+                      <option key={option} value={option}>
+                        {option}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+              </div>
+
+              <button
+                type="submit"
+                className="landing-button landing-full-width"
+                disabled={signupState === 'submitting'}
               >
-                {roleOptions.map((option) => (
-                  <option key={option} value={option}>
-                    {option}
-                  </option>
-                ))}
-              </select>
-            </label>
-
-            <label className="landing-field">
-              <span>Team size</span>
-              <select
-                value={signupForm.teamSize}
-                onChange={(event) =>
-                  setSignupForm((current) => ({
-                    ...current,
-                    teamSize: event.target.value,
-                  }))
-                }
-              >
-                {teamSizeOptions.map((option) => (
-                  <option key={option} value={option}>
-                    {option}
-                  </option>
-                ))}
-              </select>
-            </label>
-
-            <label className="landing-field">
-              <span>Primary use case</span>
-              <select
-                value={signupForm.focusArea}
-                onChange={(event) =>
-                  setSignupForm((current) => ({
-                    ...current,
-                    focusArea: event.target.value,
-                  }))
-                }
-              >
-                {focusAreaOptions.map((option) => (
-                  <option key={option} value={option}>
-                    {option}
-                  </option>
-                ))}
-              </select>
-            </label>
-
-            <label className="landing-field full">
-              <span>What are you trying to solve?</span>
-              <textarea
-                value={signupForm.notes}
-                onChange={(event) =>
-                  setSignupForm((current) => ({
-                    ...current,
-                    notes: event.target.value,
-                  }))
-                }
-                placeholder="Example: We lose product and operations decisions in Slack, and onboarding takes too long because context is fragmented."
-                rows={5}
-              />
-            </label>
-          </div>
-
-          <label className="landing-field checkbox">
-            <input
-              type="checkbox"
-              checked={signupForm.consent}
-              onChange={(event) =>
-                setSignupForm((current) => ({
-                  ...current,
-                  consent: event.target.checked,
-                }))
-              }
-              required
-            />
-            <span>I agree to be contacted about early access, demos, and pilot evaluation.</span>
-          </label>
-
-          <button
-            type="submit"
-            className="landing-button landing-submit"
-            disabled={signupState === 'submitting'}
-          >
-            <span>
-              {signupState === 'submitting' ? 'Submitting request...' : 'Request demo access'}
-            </span>
-            <MaterialIcon icon="arrow_outward" className="landing-button-icon" />
-          </button>
-
-          <p className="landing-form-note">
-            No credit card required. This form is framed as a demo or early-access
-            request for pilot teams, design partners, and serious evaluators.
-          </p>
-
-          {signupMessage ? (
-            <div className="landing-success-banner">{signupMessage}</div>
-          ) : null}
+                <span>
+                  {signupState === 'submitting' ? 'Creating account...' : 'Start free trial'}
+                </span>
+                <MaterialIcon icon="arrow_outward" className="landing-button-icon" />
+              </button>
+            </>
+          )}
         </form>
       </section>
 
       <footer className="landing-footer">
-        <div className="landing-footer-grid">
+        <div className="landing-footer-inner">
           <div className="landing-footer-brand">
-            <Link href="/" className="landing-brand">
-              <span className="landing-brand-mark">
-                <BrandMark className="brand-mark-image" />
-              </span>
-              <span className="landing-brand-copy">
-                <strong>CONVERGE</strong>
-                <span>Knowledge capture platform</span>
-              </span>
-            </Link>
-
-            <p>
-              Converge helps teams preserve why decisions were made, retrieve
-              grounded answers from chat history, and produce documentation that
-              is clean enough for operational review.
-            </p>
-
-            <div className="landing-footer-badges">
-              <span className="landing-footer-badge">Demo-ready MVP</span>
-              <span className="landing-footer-badge">Production path defined</span>
+            <BrandMark className="brand-mark-image" size={36} />
+            <div>
+              <strong>CONVERGE</strong>
+              <span>Knowledge capture platform</span>
             </div>
           </div>
-
-          <div className="landing-footer-column">
-            <h3>Product</h3>
-            <a href="#features">Features</a>
-            <a href="#surfaces">Product surfaces</a>
-            <a href="#pricing">Rollout options</a>
-            <a href="#signup">Request demo</a>
-          </div>
-
-          <div className="landing-footer-column">
-            <h3>Workspace flow</h3>
-            <strong>Public first, workspace second</strong>
-            <p>
-              Visitors first understand the product at a high level. The sample
-              company and its decisions only appear after entering the workspace.
-            </p>
-            <Link href="/dashboard" className="landing-footer-link">
-              Open sample workspace
-            </Link>
-          </div>
-
-          <div className="landing-footer-column wide">
-            <h3>MVP stack</h3>
-            <div className="landing-footer-stack">
-              {mvpStack.map((item) => (
-                <span key={item} className="landing-footer-chip">
-                  {item}
-                </span>
-              ))}
-            </div>
-
-            <h3>Production direction</h3>
-            <div className="landing-footer-stack compact">
-              {productionDirection.map((item) => (
-                <span key={item} className="landing-footer-chip">
-                  {item}
-                </span>
-              ))}
-            </div>
-          </div>
-        </div>
-
-        <div className="landing-footer-bottom-grid">
-          {footerBottomNotes.map((item) => (
-            <div key={item.title} className="landing-footer-bottom-card">
-              <strong>{item.title}</strong>
-              <span>{item.text}</span>
-            </div>
-          ))}
+          <p className="landing-footer-copy">
+            &copy; {new Date().getFullYear()} Converge. Built to help teams capture what matters.
+          </p>
         </div>
       </footer>
     </div>

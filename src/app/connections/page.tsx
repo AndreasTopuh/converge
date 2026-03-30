@@ -1,5 +1,9 @@
+'use client';
+
+import { useState } from 'react';
 import MaterialIcon from '@/components/MaterialIcon';
 import {
+  channelNames,
   connections,
   connectionStats,
   demoCompany,
@@ -10,36 +14,48 @@ const statCards = [
   {
     label: 'Messages ingested',
     value: connectionStats.totalMessages.toLocaleString(),
-    note: `Captured from ${demoCompany.shortName}'s connected Slack channels`,
+    note: `From ${demoCompany.shortName}'s connected Slack channels`,
     icon: 'mail',
     tone: 'accent',
   },
   {
     label: 'Decisions captured',
     value: connectionStats.decisionsCapture.toString(),
-    note: 'Structured and ready for search, feed review, and documentation',
+    note: 'Structured and ready for search and documentation',
     icon: 'checklist',
     tone: 'success',
   },
   {
     label: 'Active channels',
     value: connectionStats.activeChannels.toString(),
-    note: 'Currently synchronized with Converge',
+    note: 'Connected and syncing in real time',
     icon: 'forum',
     tone: 'neutral',
   },
   {
     label: 'Roadmap connectors',
     value: connectionStats.roadmapConnectors.toString(),
-    note: 'Gmail, Notion, Google Drive, Jira, and Teams extend the same model',
+    note: 'Gmail, Notion, Drive, Jira, and Teams',
     icon: 'database',
     tone: 'warning',
   },
 ];
 
 export default function ConnectionsPage() {
+  const [connectingId, setConnectingId] = useState<string | null>(null);
+  const [connectSuccess, setConnectSuccess] = useState<string | null>(null);
+
   const latestSync = connections.find((connection) => connection.status === 'connected')
     ?.lastSync;
+
+  const handleConnect = (id: string) => {
+    setConnectingId(id);
+    setTimeout(() => {
+      setConnectingId(null);
+      setConnectSuccess(id);
+      setTimeout(() => setConnectSuccess(null), 3000);
+    }, 2000);
+  };
 
   return (
     <div className="page-shell">
@@ -47,20 +63,21 @@ export default function ConnectionsPage() {
         <div className="page-header-copy">
           <div className="eyebrow">
             <MaterialIcon icon="lan" className="eyebrow-icon" />
-            {demoCompany.shortName} data sources
+            {demoCompany.shortName} integrations
           </div>
           <h1>Connections</h1>
           <p>
-            Manage the systems that feed the {demoCompany.name} demo workspace
-            with searchable conversations, decisions, and reference material.
+            Manage the data sources that feed your workspace with searchable
+            conversations, decisions, and reference material. Start with Slack
+            and expand as your team grows.
           </p>
         </div>
 
         <div className="header-note">
           <MaterialIcon icon="sync" className="header-note-icon" />
           <div>
-            <strong>Slack ingest is live</strong>
-            <span>Latest workspace refresh: {latestSync ?? 'Unavailable'}</span>
+            <strong>Slack sync is active</strong>
+            <span>Last synced: {latestSync ?? 'Unavailable'}</span>
           </div>
         </div>
       </div>
@@ -83,17 +100,16 @@ export default function ConnectionsPage() {
       <section className="surface-panel integration-note">
         <div className="panel-heading">
           <div>
-            <p className="panel-kicker">Demo ingest path</p>
-            <h2>What is actually powering the sample workspace</h2>
+            <p className="panel-kicker">Architecture stack</p>
+            <h2>What powers the ingestion pipeline</h2>
           </div>
           <MaterialIcon icon="database" className="panel-heading-icon" />
         </div>
 
         <p className="integration-note-copy">
-          For the live demo, Slack is the active source feeding the sample
-          workspace. The rest of the page shows the production-minded connector
-          roadmap that expands the same knowledge model into Gmail, Notion,
-          Google Drive, Jira, and Microsoft Teams.
+          Slack is the primary source feeding real-time conversations into the
+          knowledge pipeline. Messages flow through AI classification, reasoning
+          extraction, and semantic indexing before becoming searchable.
         </p>
 
         <div className="stack-chip-row">
@@ -108,11 +124,13 @@ export default function ConnectionsPage() {
       <div className="card-grid">
         {connections.map((connection) => {
           const isConnected = connection.status === 'connected';
+          const isConnecting = connectingId === connection.id;
+          const justConnected = connectSuccess === connection.id;
 
           return (
             <article
               key={connection.id}
-              className={`connection-card ${isConnected ? 'connected' : ''}`}
+              className={`connection-card ${isConnected ? 'connected' : ''} ${justConnected ? 'just-connected' : ''}`}
             >
               <div className="connection-header">
                 <div className="connection-platform">
@@ -126,50 +144,96 @@ export default function ConnectionsPage() {
                     <span className="name">{connection.platform}</span>
                     <p className="connection-summary">
                       {isConnected
-                        ? `Active source feeding fresh ${demoCompany.shortName} team context into Converge.`
-                        : 'Planned connector in the enterprise roadmap beyond the live Slack ingest.'}
+                        ? `Active source feeding team context into your workspace.`
+                        : justConnected
+                        ? 'Connection request submitted!'
+                        : 'Available integration for enterprise knowledge capture.'}
                     </p>
                   </div>
                 </div>
 
-                <span
-                  className={`status-badge ${
-                    isConnected ? 'connected' : 'coming-soon'
-                  }`}
-                >
-                  <MaterialIcon
-                    icon={isConnected ? 'check_circle' : 'schedule'}
-                    className="status-badge-icon"
-                  />
-                  {isConnected ? 'Connected' : 'Coming soon'}
-                </span>
+                {isConnected ? (
+                  <span className="status-badge connected">
+                    <MaterialIcon icon="check_circle" className="status-badge-icon" />
+                    Connected
+                  </span>
+                ) : justConnected ? (
+                  <span className="status-badge connected">
+                    <MaterialIcon icon="check_circle" className="status-badge-icon" />
+                    Requested
+                  </span>
+                ) : (
+                  <button
+                    type="button"
+                    className="connect-btn"
+                    onClick={() => handleConnect(connection.id)}
+                    disabled={isConnecting}
+                  >
+                    {isConnecting ? (
+                      <>
+                        <MaterialIcon icon="sync" className="connect-btn-spinner" />
+                        Connecting...
+                      </>
+                    ) : (
+                      <>
+                        <MaterialIcon icon="arrow_outward" className="connect-btn-icon" />
+                        Connect
+                      </>
+                    )}
+                  </button>
+                )}
               </div>
 
               {isConnected ? (
-                <div className="connection-details">
-                  <div className="connection-detail">
-                    <div className="label">Workspace</div>
-                    <div className="value">{connection.workspace}</div>
-                  </div>
-                  <div className="connection-detail">
-                    <div className="label">Channels</div>
-                    <div className="value">{connection.channels} synced</div>
-                  </div>
-                  <div className="connection-detail">
-                    <div className="label">Messages</div>
-                    <div className="value">
-                      {connection.messagesIngested.toLocaleString()}
+                <>
+                  <div className="connection-details">
+                    <div className="connection-detail">
+                      <div className="label">Workspace</div>
+                      <div className="value">{connection.workspace}</div>
+                    </div>
+                    <div className="connection-detail">
+                      <div className="label">Channels</div>
+                      <div className="value">{connection.channels} synced</div>
+                    </div>
+                    <div className="connection-detail">
+                      <div className="label">Messages</div>
+                      <div className="value">
+                        {connection.messagesIngested.toLocaleString()}
+                      </div>
+                    </div>
+                    <div className="connection-detail">
+                      <div className="label">Last sync</div>
+                      <div className="value">{connection.lastSync}</div>
                     </div>
                   </div>
-                  <div className="connection-detail">
-                    <div className="label">Last sync</div>
-                    <div className="value">{connection.lastSync}</div>
+
+                  <div className="connection-channels">
+                    <span className="connection-channels-label">Active channels</span>
+                    <div className="connection-channel-list">
+                      {channelNames.map((channel) => (
+                        <span key={channel} className="connection-channel-chip">
+                          <MaterialIcon icon="forum" className="channel-chip-icon" />
+                          {channel}
+                        </span>
+                      ))}
+                    </div>
                   </div>
-                </div>
+
+                  <div className="connection-sync-bar">
+                    <div className="connection-sync-info">
+                      <MaterialIcon icon="sync" className="connection-sync-icon" />
+                      <span>Sync active — next refresh in 5 minutes</span>
+                    </div>
+                    <div className="connection-sync-progress">
+                      <span className="connection-sync-fill" />
+                    </div>
+                  </div>
+                </>
               ) : (
                 <div className="connection-empty">
-                  Connector setup is not enabled yet. This integration is part
-                  of the production roadmap shown in the architecture deck.
+                  {justConnected
+                    ? 'Your connection request has been submitted. We\'ll notify you once setup is complete.'
+                    : 'Click Connect to start ingesting data from this source into your knowledge workspace.'}
                 </div>
               )}
             </article>

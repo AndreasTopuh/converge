@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import MaterialIcon from '@/components/MaterialIcon';
 import { autoDocs, demoCompany } from '@/data/mockData';
 
@@ -175,12 +175,47 @@ const renderContent = (content: string) => {
   return elements;
 };
 
+const generateSteps = [
+  'Analyzing captured decisions from workspace...',
+  'Extracting key themes and stakeholder context...',
+  'Structuring document sections and formatting...',
+  'Finalizing document with source references...',
+];
+
 export default function AutoDocsPage() {
   const [expandedId, setExpandedId] = useState<string | null>(null);
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [generatingStep, setGeneratingStep] = useState(0);
+  const [showGenerated, setShowGenerated] = useState(false);
 
   const toggleDoc = (id: string) => {
     setExpandedId(expandedId === id ? null : id);
   };
+
+  const handleGenerate = () => {
+    setIsGenerating(true);
+    setGeneratingStep(0);
+  };
+
+  useEffect(() => {
+    if (!isGenerating) return;
+
+    if (generatingStep < generateSteps.length) {
+      const timer = setTimeout(() => {
+        setGeneratingStep((prev) => prev + 1);
+      }, 800);
+      return () => clearTimeout(timer);
+    }
+
+    const doneTimer = setTimeout(() => {
+      setIsGenerating(false);
+      setShowGenerated(true);
+    }, 500);
+    return () => clearTimeout(doneTimer);
+  }, [isGenerating, generatingStep]);
+
+  const publishedCount = autoDocs.filter((d) => d.status === 'published').length;
+  const reviewCount = autoDocs.filter((d) => d.status === 'review').length;
 
   return (
     <div className="page-shell">
@@ -188,12 +223,13 @@ export default function AutoDocsPage() {
         <div className="page-header-copy">
           <div className="eyebrow">
             <MaterialIcon icon="description" className="eyebrow-icon" />
-            {demoCompany.shortName} generated documentation
+            {demoCompany.shortName} documentation
           </div>
           <h1>Auto Docs</h1>
           <p>
-            Review generated SOPs and structured documentation compiled from the
-            decisions captured inside the {demoCompany.name} sample workspace.
+            SOPs, playbooks, and policy documents generated automatically from
+            your captured decisions. Every document stays linked to its source
+            conversations and gets updated when new decisions are captured.
           </p>
         </div>
 
@@ -201,15 +237,120 @@ export default function AutoDocsPage() {
           <MaterialIcon icon="auto_stories" className="header-note-icon" />
           <div>
             <strong>{autoDocs.length} documents available</strong>
-            <span>Payments, onboarding, and governance docs are organized in one review queue</span>
+            <span>{publishedCount} published · {reviewCount} in review</span>
           </div>
         </div>
       </div>
+
+      <div className="docs-action-bar">
+        <button
+          type="button"
+          className="docs-generate-btn"
+          onClick={handleGenerate}
+          disabled={isGenerating}
+        >
+          <MaterialIcon icon="auto_stories" className="docs-generate-icon" />
+          <span>{isGenerating ? 'Generating...' : 'Generate new document'}</span>
+        </button>
+
+        <div className="docs-stats">
+          <span className="docs-stat">
+            <MaterialIcon icon="check_circle" className="docs-stat-icon published" />
+            {publishedCount} Published
+          </span>
+          <span className="docs-stat">
+            <MaterialIcon icon="history" className="docs-stat-icon review" />
+            {reviewCount} In Review
+          </span>
+        </div>
+      </div>
+
+      {isGenerating && (
+        <div className="docs-generating surface-panel">
+          <div className="docs-generating-head">
+            <MaterialIcon icon="psychology_alt" className="docs-generating-spinner" />
+            <div>
+              <strong>AI is generating a new document</strong>
+              <span>Analyzing workspace decisions and structuring content...</span>
+            </div>
+          </div>
+          <div className="docs-generating-steps">
+            {generateSteps.map((step, index) => (
+              <div
+                key={step}
+                className={`docs-generating-step ${index < generatingStep ? 'done' : ''} ${index === generatingStep ? 'active' : ''}`}
+              >
+                <MaterialIcon
+                  icon={index < generatingStep ? 'check_circle' : 'search'}
+                  className="docs-generating-step-icon"
+                />
+                <span>{step}</span>
+              </div>
+            ))}
+          </div>
+          <div className="ask-loading-progress" aria-hidden="true">
+            <span />
+          </div>
+        </div>
+      )}
+
+      {showGenerated && (
+        <article className="doc-card generated-highlight expanded">
+          <div className="doc-card-header" style={{ cursor: 'default' }}>
+            <div className="doc-card-summary">
+              <div className="doc-icon-wrap draft">
+                <MaterialIcon icon="auto_stories" className="doc-icon" />
+              </div>
+              <div className="doc-copy">
+                <div className="doc-title">
+                  <span className="generated-badge">Just generated</span>
+                  Northstar Monorepo Migration Guide
+                </div>
+                <div className="doc-description">
+                  Technical migration guide covering the transition from multi-repo to Turborepo monorepo structure, including CI/CD pipeline changes and team workflow updates.
+                </div>
+                <div className="doc-meta-row">
+                  <span className="meta-pill">
+                    <MaterialIcon icon="calendar_month" className="meta-pill-icon" />
+                    {new Date().toISOString().split('T')[0]}
+                  </span>
+                  <span className="meta-pill">
+                    <MaterialIcon icon="attachment" className="meta-pill-icon" />
+                    6 sources
+                  </span>
+                </div>
+              </div>
+            </div>
+            <div className="doc-card-actions">
+              <span className="status-badge coming-soon">
+                <MaterialIcon icon="draft" className="status-badge-icon" />
+                Draft
+              </span>
+            </div>
+          </div>
+          <div className="doc-content">
+            <h2>1. Migration Overview</h2>
+            <p>This guide covers Northstar Commerce&apos;s transition from a multi-repository structure to a unified <strong>Turborepo monorepo</strong> for all frontend services.</p>
+            <h2>2. Key Changes</h2>
+            <ul>
+              <li>All frontend packages consolidated under a single repository</li>
+              <li>Shared configurations for TypeScript, ESLint, and build tools</li>
+              <li>Incremental CI builds using Turborepo caching (target: under 4 minutes)</li>
+              <li>Unified dependency management with single lockfile</li>
+            </ul>
+            <h2>3. Decision Rationale</h2>
+            <p>Cross-repo dependency issues were costing the team <strong>2–3 hours per week</strong>. Turborepo was chosen over Nx for its simplicity and native Vercel integration.</p>
+            <h2>4. Source Trace</h2>
+            <p>Decision captured in <strong>#engineering</strong> on March 15, 2026 by Andreas and Daniel.</p>
+          </div>
+        </article>
+      )}
 
       <div className="docs-list">
         {autoDocs.map((doc) => {
           const isExpanded = expandedId === doc.id;
           const isPublished = doc.status === 'published';
+          const isReview = doc.status === 'review';
 
           return (
             <article
@@ -224,7 +365,7 @@ export default function AutoDocsPage() {
                 <div className="doc-card-summary">
                   <div className={`doc-icon-wrap ${doc.status}`}>
                     <MaterialIcon
-                      icon={isPublished ? 'article' : 'edit_note'}
+                      icon={isPublished ? 'article' : isReview ? 'history' : 'edit_note'}
                       className="doc-icon"
                     />
                   </div>
@@ -255,14 +396,14 @@ export default function AutoDocsPage() {
                 <div className="doc-card-actions">
                   <span
                     className={`status-badge ${
-                      isPublished ? 'connected' : 'coming-soon'
+                      isPublished ? 'connected' : isReview ? 'review-badge' : 'coming-soon'
                     }`}
                   >
                     <MaterialIcon
-                      icon={isPublished ? 'check_circle' : 'draft'}
+                      icon={isPublished ? 'check_circle' : isReview ? 'history' : 'draft'}
                       className="status-badge-icon"
                     />
-                    {isPublished ? 'Published' : 'Draft'}
+                    {isPublished ? 'Published' : isReview ? 'In Review' : 'Draft'}
                   </span>
 
                   <MaterialIcon
